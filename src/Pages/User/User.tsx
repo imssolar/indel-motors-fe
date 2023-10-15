@@ -8,7 +8,7 @@ import {
   Container,
 } from "@mui/material";
 
-export const FormUser = () => {
+export const User = () => {
 
     const handleSubmit=()=>{
 

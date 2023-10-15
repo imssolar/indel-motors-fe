@@ -15,37 +15,33 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { clientSchema } from "../../schemas/clientSchema";
 import { MessageAlert } from "../../components/MessageAlert/MessageAlert";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ClientContext } from "../../context/Client/ClientContext";
 
 interface IFormInput {
   rut: string;
-  // names: string;
-  // surnames: string;
-  // phone: string;
-  // address: string;
-  // district: string;
-  // email: string;
+  names: string;
+  surnames: string;
+  phone: string;
+  address: string;
+  district: string;
+  email: string;
 }
-export const FormClient = () => {
+export const Client = () => {
+  //   const [district,setDistrict] = useState('')
 
+  const { handleSubmit, register } = useForm<IFormInput>();
 
-  const [district,setDistrict] = useState('')
-
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<IFormInput>({
-    resolver:yupResolver(clientSchema)
-  });
-
-  const handleDistrictChange=(event:SelectChangeEvent)=>{
-    setDistrict(event.target.value)
-  }
+  const { addClient } = useContext(ClientContext);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
-    console.log(formData)
+    console.log(formData);
+    addClient(formData);
   };
+
+  // useEffect(()=>{
+  //   getClients()
+  // },[])
 
   return (
     <Container component={"main"} maxWidth="xs">
@@ -74,11 +70,8 @@ export const FormClient = () => {
                 fullWidth
                 id="rut"
                 label="Rut cliente"
-                name="rut"
+                {...register("rut")}
               />
-              {errors.rut && (
-              <MessageAlert messageToShow={errors.rut.message} />
-            )}
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -86,7 +79,7 @@ export const FormClient = () => {
                 fullWidth
                 id="names"
                 label="Nombres"
-                name="names"
+                {...register("names")}
               />
             </Grid>
             <Grid item xs={6}>
@@ -95,7 +88,7 @@ export const FormClient = () => {
                 fullWidth
                 id="surnames"
                 label="Apellidos"
-                name="surnames"
+                {...register("surnames")}
               />
             </Grid>
             <Grid item xs={12}>
@@ -104,7 +97,7 @@ export const FormClient = () => {
                 fullWidth
                 id="phone"
                 label="Télefono contacto"
-                name="phone"
+                {...register("phone")}
               />
             </Grid>
             <Grid item xs={12}>
@@ -112,34 +105,28 @@ export const FormClient = () => {
                 required
                 fullWidth
                 id="address"
-                name="address"
                 label="Dirección"
+                {...register("address")}
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth>
-                <Select
-                  labelId="district-label"
-                  id="district"
-                  placeholder="Comuna*"
-                  defaultValue={"Santiago"}
-                  value={district}
-                  onChange={handleDistrictChange}
-                >
-                  <MenuItem>Maipú</MenuItem>
-                  <MenuItem>Talagante</MenuItem>
-                  <MenuItem>Cerrillos</MenuItem>
-                </Select>
-              </FormControl>
+              <TextField
+                required
+                fullWidth
+                id="district"
+                label="Comuna"
+                type="district"
+                {...register("district")}
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 required
                 fullWidth
                 id="email"
-                name="email"
                 label="Correo"
                 type="email"
+                {...register("email")}
               />
             </Grid>
           </Grid>

@@ -15,17 +15,18 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../../schemas/loginSchema";
 import { AuthContext } from "../../context/Auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface IFormInput {
   email: string;
   password: string;
 }
 
-export const SignInside = () => {
+export const Login = () => {
   const [showMessage, setShowMessage] = useState(false);
 
   const { login } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
@@ -40,6 +41,7 @@ export const SignInside = () => {
     //react-table props: pasarle botones, data, columnas y cantidad de elementos
     //ruta privada del fe-supermercado
     login(sendData);
+    navigate("/Client");
   };
 
   return (

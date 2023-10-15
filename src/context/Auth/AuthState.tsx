@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer } from "react";
-import { User, UserLogin } from "../../types";
+import { User, UserLogin } from "../../types/user";
 import api from "../../api";
 import { AuthContext } from "./AuthContext";
 import { AuthReducer } from "./AuthReducer";
-
+import { useNavigate } from "react-router-dom";
 interface stateProps {
   children: React.ReactNode;
 }

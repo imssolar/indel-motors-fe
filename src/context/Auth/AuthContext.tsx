@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import {  User, UserLogin } from "../../types";
+import {  User, UserLogin } from "../../types/user";
 
 interface ContextProps {
   token: string;

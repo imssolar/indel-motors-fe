@@ -1,16 +1,32 @@
-import "./App.css";
-import { FormClient } from "./Pages/Client/FormClient";
-
-import { SignInside } from "./Pages/Login/SignInside";
-import { FormUser } from "./Pages/User/FormUser";
+import { Client, Login } from "./Pages";
 import { AuthState } from "./context/Auth/AuthState";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import "./App.css";
+import PersistentDrawerLeft from "./components/Drawer/PersistentDrawer";
 
 function App() {
+  const routes = createBrowserRouter([
+    {
+      path: "/",
+      element: <Login />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/Client",
+      element: <Client />,
+    },
+    {
+      path:"/Menu",
+      element:<PersistentDrawerLeft/>
+    }
+  ]);
+
   return (
     <AuthState>
-      {/* <SignInside /> */}
-      {/* <FormUser/> */}
-      <FormClient/>
+      <RouterProvider router={routes} />
     </AuthState>
   );
 }
