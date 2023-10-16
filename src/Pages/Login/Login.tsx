@@ -16,6 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../../schemas/loginSchema";
 import { AuthContext } from "../../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { ClientContext } from "../../context/Client/ClientContext";
 
 interface IFormInput {
   email: string;
@@ -26,6 +27,7 @@ export const Login = () => {
   const [showMessage, setShowMessage] = useState(false);
 
   const { login } = useContext(AuthContext);
+  const {getClients} = useContext(ClientContext)
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -41,7 +43,7 @@ export const Login = () => {
     //react-table props: pasarle botones, data, columnas y cantidad de elementos
     //ruta privada del fe-supermercado
     login(sendData);
-    navigate("/Client");
+    navigate("/menu");
   };
 
   return (

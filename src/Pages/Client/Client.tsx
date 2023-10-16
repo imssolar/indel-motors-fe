@@ -22,7 +22,7 @@ interface IFormInput {
   rut: string;
   names: string;
   surnames: string;
-  phone: string;
+  cellphone_number: string;
   address: string;
   district: string;
   email: string;
@@ -32,16 +32,17 @@ export const Client = () => {
 
   const { handleSubmit, register } = useForm<IFormInput>();
 
-  const { addClient } = useContext(ClientContext);
+  const { addClient, getClients } = useContext(ClientContext);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     console.log(formData);
-    addClient(formData);
+     addClient(formData);
+    
   };
 
-  // useEffect(()=>{
-  //   getClients()
-  // },[])
+  useEffect(()=>{
+    getClients()
+  },[])
 
   return (
     <Container component={"main"} maxWidth="xs">
@@ -95,9 +96,9 @@ export const Client = () => {
               <TextField
                 required
                 fullWidth
-                id="phone"
+                id="cellphone_number"
                 label="Télefono contacto"
-                {...register("phone")}
+                {...register("cellphone_number")}
               />
             </Grid>
             <Grid item xs={12}>

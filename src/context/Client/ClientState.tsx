@@ -10,34 +10,33 @@ interface stateProps {
 
 export interface state {
   client: Client | null;
-  clients: [] | null;
+  clients: Client[];
 }
 
 const INITIAL_STATE: state = {
   client: null,
-  clients: null,
+  clients: [],
 };
 
 export const ClientState = ({ children }: stateProps) => {
   const [state, dispatch] = useReducer(ClientReducer, INITIAL_STATE);
 
-  // const getClients = async () => {
-  //   try {
-  //     const { data } = await api.get("/api/account");
-  //     console.log(data);
-  //     dispatch({
-  //       type: "GET_CLIENTS",
-  //       payload: data,
-  //     });
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // };
+  const getClients = async () => {
+    try {
+      const  data  = await api.get("/account");
+      console.log(data);
+      dispatch({
+        type: "GET_CLIENTS",
+        payload: data.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const addClient = async (clientToCreate: ClientCreate) => {
-    console.log("add client");
     try {
-      const { data } = await api.post("/api/account", clientToCreate, {
+      const { data } = await api.post("/account", clientToCreate, {
         headers: {
           "x-token": localStorage.getItem("token"),
         },
@@ -52,7 +51,7 @@ export const ClientState = ({ children }: stateProps) => {
   };
 
   return (
-    <ClientContext.Provider value={{ ...state, addClient }}>
+    <ClientContext.Provider value={{ ...state, addClient, getClients }}>
       {children}
     </ClientContext.Provider>
   );
