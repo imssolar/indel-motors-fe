@@ -1,42 +1,45 @@
-import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import GroupIcon from '@mui/icons-material/Group';
-import CarRepairIcon from '@mui/icons-material/CarRepair';
-import {  clientPages } from '../../utils/Pages/pagesUtils';
-import { Link, Navigate, redirect, useNavigate } from 'react-router-dom';
+import * as React from "react";
+import { styled, useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import CarRepairIcon from "@mui/icons-material/CarRepair";
+import {
+  clientPages,
+  spareGroupPages,
+  sparePages,
+  vehiclePages,
+  workOrderPages,
+} from "../../utils/Pages/pagesUtils";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  transition: theme.transitions.create('margin', {
+  transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   marginLeft: `-${drawerWidth}px`,
   ...(open && {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -49,36 +52,36 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
+  transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
-  justifyContent: 'flex-end',
+  justifyContent: "flex-end",
 }));
 
-interface Props{
-  children: React.ReactNode
+interface Props {
+  children: React.ReactNode;
 }
 
-export default function Menu({children}:Props) {
+export default function Menu({ children }: Props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -90,10 +93,9 @@ export default function Menu({children}:Props) {
     setOpen(false);
   };
 
-  const navigate = useNavigate()
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -102,7 +104,7 @@ export default function Menu({children}:Props) {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
             <MenuIcon />
           </IconButton>
@@ -115,9 +117,9 @@ export default function Menu({children}:Props) {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
           },
         }}
         variant="persistent"
@@ -126,12 +128,16 @@ export default function Menu({children}:Props) {
       >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {theme.direction === "ltr" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-        <Typography align='center'>CLIENTES</Typography>
+          <Typography align="center">CLIENTES</Typography>
           {clientPages.map((item, index) => (
             <ListItem key={index} disablePadding>
               <ListItemButton component={Link} to={item.path}>
@@ -145,64 +151,71 @@ export default function Menu({children}:Props) {
           ))}
         </List>
         <Divider />
-        <Typography align='center' sx={{mt:1}}>VEHÍCULOS</Typography>
+        <Typography align="center" sx={{ mt: 1 }}>
+          VEHÍCULOS
+        </Typography>
         <List>
-          {['Lista Vehículos', 'Buscar Vehículo', 'Agregar Vehículo','Desactivar Vehículo'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton onClick={()=>console.log(index)}>
-                <ListItemIcon >
+          {vehiclePages.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton component={Link} to={item.path}>
+                <ListItemIcon>
                   {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                    <CarRepairIcon/>
+                  <CarRepairIcon />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
         <Divider />
         <List>
-        <Typography align='center' sx={{mt:1}}>ORDEN DE TRABAJO</Typography>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
+          <Typography align="center" sx={{ mt: 1 }}>
+            ORDEN DE TRABAJO
+          </Typography>
+          {workOrderPages.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton component={Link} to={item.path}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
         <Divider />
         <List>
-        <Typography align='center' sx={{mt:1}}>REPUESTOS</Typography>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
+          <Typography align="center" sx={{ mt: 1 }}>
+            REPUESTOS
+          </Typography>
+          {sparePages.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton component={Link} to={item.path}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
         <Divider />
         <List>
-        <Typography align='center' sx={{mt:1}}>GRUPOS DE REPUESTO</Typography>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
+          <Typography align="center" sx={{ mt: 1 }}>
+            GRUPOS DE REPUESTO
+          </Typography>
+          {spareGroupPages.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton component={Link} to={item.path}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
         <Divider />
-
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
