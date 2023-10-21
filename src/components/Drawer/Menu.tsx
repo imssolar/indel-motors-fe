@@ -17,6 +17,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import CarRepairIcon from "@mui/icons-material/CarRepair";
+
+
 import {
   clientPages,
   spareGroupPages,
@@ -92,8 +94,6 @@ export default function Menu({ children }: Props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -142,8 +142,7 @@ export default function Menu({ children }: Props) {
             <ListItem key={index} disablePadding>
               <ListItemButton component={Link} to={item.path}>
                 <ListItemIcon>
-                  {item.icon}
-                  {/* <GroupIcon/> */}
+                 {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItemButton>

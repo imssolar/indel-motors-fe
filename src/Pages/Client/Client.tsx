@@ -17,6 +17,7 @@ import { clientSchema } from "../../schemas/clientSchema";
 import { MessageAlert } from "../../components/MessageAlert/MessageAlert";
 import { useContext, useEffect, useState } from "react";
 import { ClientContext } from "../../context/Client/ClientContext";
+import { Layout } from "../../components/Layout/Layout";
 
 interface IFormInput {
   rut: string;
@@ -36,106 +37,107 @@ export const Client = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     console.log(formData);
-     addClient(formData);
-    
+    addClient(formData);
   };
 
-  useEffect(()=>{
-    getClients()
-  },[])
+  useEffect(() => {
+    getClients();
+  }, []);
 
   return (
-    <Container component={"main"} maxWidth="xs">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography component={"h1"} variant="h5">
-          Crear Cliente
-        </Typography>
+    <Layout>
+      <Container component={"main"} maxWidth="xs">
+        <CssBaseline />
         <Box
-          component={"form"}
-          noValidate
-          sx={{ mt: 3 }}
-          onSubmit={handleSubmit(onSubmit)}
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
         >
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="rut"
-                label="Rut cliente"
-                {...register("rut")}
-              />
+          <Typography component={"h1"} variant="h5">
+            Crear Cliente
+          </Typography>
+          <Box
+            component={"form"}
+            noValidate
+            sx={{ mt: 3 }}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="rut"
+                  label="Rut cliente"
+                  {...register("rut")}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="names"
+                  label="Nombres"
+                  {...register("names")}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="surnames"
+                  label="Apellidos"
+                  {...register("surnames")}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="cellphone_number"
+                  label="Télefono contacto"
+                  {...register("cellphone_number")}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="address"
+                  label="Dirección"
+                  {...register("address")}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="district"
+                  label="Comuna"
+                  type="district"
+                  {...register("district")}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Correo"
+                  type="email"
+                  {...register("email")}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                fullWidth
-                id="names"
-                label="Nombres"
-                {...register("names")}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                fullWidth
-                id="surnames"
-                label="Apellidos"
-                {...register("surnames")}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="cellphone_number"
-                label="Télefono contacto"
-                {...register("cellphone_number")}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="address"
-                label="Dirección"
-                {...register("address")}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="district"
-                label="Comuna"
-                type="district"
-                {...register("district")}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                label="Correo"
-                type="email"
-                {...register("email")}
-              />
-            </Grid>
-          </Grid>
-          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Guardar
-          </Button>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Guardar
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Layout>
   );
 };

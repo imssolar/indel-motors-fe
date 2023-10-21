@@ -11,11 +11,13 @@ interface stateProps {
 export interface state {
   client: Client | null;
   clients: Client[];
+  message: string;
 }
 
 const INITIAL_STATE: state = {
   client: null,
   clients: [],
+  message: "",
 };
 
 export const ClientState = ({ children }: stateProps) => {
@@ -23,8 +25,7 @@ export const ClientState = ({ children }: stateProps) => {
 
   const getClients = async () => {
     try {
-      const  data  = await api.get("/account");
-      console.log(data);
+      const data = await api.get("/account");
       dispatch({
         type: "GET_CLIENTS",
         payload: data.data,
@@ -36,22 +37,56 @@ export const ClientState = ({ children }: stateProps) => {
 
   const addClient = async (clientToCreate: ClientCreate) => {
     try {
-      const { data } = await api.post("/account", clientToCreate, {
+      await api.post("/account", clientToCreate, {
         headers: {
           "x-token": localStorage.getItem("token"),
         },
       });
       dispatch({
         type: "ADD_CLIENT",
-        payload: data.client,
       });
     } catch (error) {
       console.log(error);
     }
   };
 
+  const editClient = async (clientToEdit: ClientCreate) => {
+    try {
+      const { data } = await api.put(
+        `/account/${clientToEdit.rut}`,
+        clientToEdit
+      );
+      dispatch({
+        type: "EDIT_CLIENT",
+        payload: data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const findCLient = async (clientRut: string) => {
+    try {
+      const { data } = await api.get(`/account/${clientRut}`);
+      dispatch({
+        type: "FIND_CLIENT",
+        payload: data,
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  const clearClientFinder=()=>{
+    dispatch({
+      type:"CLEAR_CLIENT"
+    })
+  }
+
   return (
-    <ClientContext.Provider value={{ ...state, addClient, getClients }}>
+    <ClientContext.Provider
+      value={{ ...state, addClient, getClients, editClient, findCLient,clearClientFinder }}
+    >
       {children}
     </ClientContext.Provider>
   );
