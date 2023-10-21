@@ -1,9 +1,9 @@
-import { Client, Login, Menu } from "./Pages";
+import { Client, Login, Menu, EditClient } from "./Pages";
 import { AuthState } from "./context/Auth/AuthState";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import "./App.css";
 import { ClientState } from "./context/Client/ClientState";
-import ClientList from "./Pages/Client/ClientList";
+import "./App.css";
+import { FindClient } from "./Pages/Client/FindClient";
 
 function App() {
   const routes = createBrowserRouter([
@@ -24,8 +24,12 @@ function App() {
       element: <Menu/>,
     },
     {
-      path:"/client-list",
-      element:<ClientList/>
+      path:"/client-find",
+      element:<FindClient/>
+    },
+    {
+      path:"/client-edit",
+      element:<EditClient/>
     }
   ]);
 
