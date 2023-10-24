@@ -68,24 +68,60 @@ export const ClientState = ({ children }: stateProps) => {
   const findCLient = async (clientRut: string) => {
     try {
       const { data } = await api.get(`/account/${clientRut}`);
+      const { message } = data;
+      if (message) {
+        messageError(message);
+        return;
+      }
       dispatch({
         type: "FIND_CLIENT",
         payload: data,
       });
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      console.log(error);
     }
   };
 
-  const clearClientFinder=()=>{
+  const clearClientFinder = () => {
     dispatch({
-      type:"CLEAR_CLIENT"
-    })
-  }
+      type: "CLEAR_CLIENT",
+    });
+  };
+
+  const messageError = (message: string) => {
+    console.log("message error");
+    dispatch({
+      type: "ERROR_CLIENT",
+      payload: message,
+    });
+  };
+
+  const changeStatusClient = async (clientRut: string) => {
+    try {
+      const {
+        data: { message },
+      } = await api.delete(`/account/${clientRut}`);
+      dispatch({
+        type: "DISABLED_CLIENT",
+        
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <ClientContext.Provider
-      value={{ ...state, addClient, getClients, editClient, findCLient,clearClientFinder }}
+      value={{
+        ...state,
+        addClient,
+        getClients,
+        editClient,
+        findCLient,
+        clearClientFinder,
+        messageError,
+        changeStatusClient,
+      }}
     >
       {children}
     </ClientContext.Provider>

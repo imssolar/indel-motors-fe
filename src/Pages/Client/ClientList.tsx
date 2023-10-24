@@ -9,8 +9,8 @@ import Paper from "@mui/material/Paper";
 import { ClientContext } from "../../context/Client/ClientContext";
 import { Layout } from "../../components/Layout/Layout";
 import { Button } from "@mui/material";
-import { redirect, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const headers = [
   "Rut",
   "Nombres",
@@ -30,6 +30,8 @@ export const ClientList = () => {
   }, []);
 
   const navigate = useNavigate();
+
+  
 
   return (
     <Layout>
@@ -70,7 +72,7 @@ export const ClientList = () => {
                   </Button>
                 </TableCell>
                 <TableCell align="left">
-                  <Button color="error" variant="contained">
+                  <Button color="error" variant="contained" >
                     Eliminar
                   </Button>
                 </TableCell>

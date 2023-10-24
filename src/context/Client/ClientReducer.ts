@@ -6,7 +6,10 @@ type ClientActionType =
   | { type: "GET_CLIENTS"; payload: Client[] }
   | { type: "EDIT_CLIENT"; payload: string }
   | { type: "FIND_CLIENT"; payload: Client }
-  | { type: "CLEAR_CLIENT" };
+  | { type: "CLEAR_CLIENT" }
+  | { type: "ERROR_CLIENT"; payload: string }
+  | { type: "DISABLED_CLIENT"; };
+
 
 export const ClientReducer = (state: state, action: ClientActionType) => {
   switch (action.type) {
@@ -32,13 +35,28 @@ export const ClientReducer = (state: state, action: ClientActionType) => {
       return {
         ...state,
         client: action.payload,
+        message: "",
       };
 
     case "CLEAR_CLIENT":
       return {
         ...state,
         client: null,
+        message: "",
       };
+
+    case "ERROR_CLIENT":
+      return {
+        ...state,
+        message: action.payload,
+        client: null,
+      };
+
+    case "DISABLED_CLIENT":
+      return{
+        ...state,
+        // message:action.payload
+      }
 
     default:
       return state;
