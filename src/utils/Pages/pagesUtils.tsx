@@ -1,8 +1,8 @@
 
 import { BsFillPersonLinesFill } from "react-icons/bs";
-import { SvgIconComponent } from "@mui/icons-material";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { SvgIconProps } from "@mui/material";
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import React from "react";
 interface PageConstant {
   name: string;
@@ -15,13 +15,13 @@ export const clientPages: PageConstant[] = [
   {
     name: "Buscar Cliente",
     path: "/client-find",
-    icon: <DeleteIcon/>
+    icon: <PersonSearchIcon/>
 
   },
   {
     name: "Agregar Cliente",
     path: "/client",
-    icon: BsFillPersonLinesFill,
+    icon: <PersonAddAltIcon/>
   },
 ];
 
