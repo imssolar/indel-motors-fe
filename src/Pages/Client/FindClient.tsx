@@ -11,6 +11,7 @@ import {
   Card,
   CardContent,
   CardActions,
+  Divider,
 } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
@@ -24,7 +25,6 @@ interface IFormInput {
 }
 
 export const FindClient = () => {
-  
   const { handleSubmit, register } = useForm<IFormInput>();
 
   const { client, message, findCLient, clearClientFinder, changeStatusClient } =
@@ -70,7 +70,9 @@ export const FindClient = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: `¿Desea ${clientStatus ? "deshabilitar":"habilitar"} al cliente?`,
+      confirmButtonText: `¿Desea ${
+        clientStatus ? "deshabilitar" : "habilitar"
+      } al cliente?`,
     }).then((result) => {
       if (result.isConfirmed) {
         clearClientFinder();
@@ -120,26 +122,30 @@ export const FindClient = () => {
           {client && (
             <Card sx={{ minWidth: 275 }}>
               <CardContent>
-                <Typography
-                  sx={{ fontSize: 14 }}
-                  color="text.secondary"
-                  gutterBottom
-                >
-                  Cliente
+                <Typography sx={{ mb: 1 }} variant="h5" component="div">
+                  {client.names} {client.surnames}
                 </Typography>
-                <Typography variant="h5" component="div">
+                <Divider />
+                <Typography sx={{ mt: 1 }} component="div">
                   {client.rut}
                 </Typography>
-                <Typography variant="h5" component="div">
-                  {client.names}
-                </Typography>
+                <Typography>{client.email}</Typography>
+                <Typography>{client.address}</Typography>
+                <Typography>{client.district}</Typography>
               </CardContent>
               <CardActions>
-                <Button onClick={() => navigate("/client-edit")} size="small">
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => navigate("/client-edit")}
+                  size="small"
+                >
                   Editar
                 </Button>
                 <Button
                   size="small"
+                  variant="contained"
+                  color="error"
                   onClick={() => showDialog(client.rut, client.status)}
                 >
                   {client.status ? "Deshabilitar" : "Habilitar"}
