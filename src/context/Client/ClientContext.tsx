@@ -9,7 +9,7 @@ interface ContextProps {
   addClient: (clientToCreate: ClientCreate) => Promise<void>;
   editClient: (clientToEdit: ClientCreate) => Promise<void>;
   findCLient: (clientRut: string) => Promise<void>;
-  changeStatusClient: (clientRut:string)=>Promise<void>;
+  deleteClient: (clientRut:string)=>Promise<void>;
   clearClientFinder: () => void;
   messageError:(message:string)=>void
 }

@@ -27,7 +27,7 @@ interface IFormInput {
 export const FindClient = () => {
   const { handleSubmit, register } = useForm<IFormInput>();
 
-  const { client, message, findCLient, clearClientFinder, changeStatusClient } =
+  const { client, message, findCLient, clearClientFinder, deleteClient } =
     useContext(ClientContext);
 
   const navigate = useNavigate();
@@ -62,21 +62,20 @@ export const FindClient = () => {
     }
   }, [message]);
 
-  const showDialog = (clientRut: string, clientStatus: boolean) => {
+  const showDialog = (clientRut: string) => {
     Swal.fire({
-      title: `${clientStatus ? "Deshabilitar" : "Habilitar"} Cliente`,
-      text: `${message}`,
+      title: "Eliminar Cliente",
+      text: "Confirme la eliminación del cliente",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: `¿Desea ${
-        clientStatus ? "deshabilitar" : "habilitar"
-      } al cliente?`,
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
         clearClientFinder();
-        changeStatusClient(clientRut);
+        deleteClient(clientRut);
       } else {
         clearClientFinder();
       }
@@ -126,12 +125,16 @@ export const FindClient = () => {
                   {client.names} {client.surnames}
                 </Typography>
                 <Divider />
+                <Typography variant="h5" sx={{mt:1,mb:1}}>Datos Personales</Typography>
                 <Typography sx={{ mt: 1 }} component="div">
                   {client.rut}
                 </Typography>
-                <Typography>{client.email}</Typography>
                 <Typography>{client.address}</Typography>
                 <Typography>{client.district}</Typography>
+                <Divider />
+                <Typography variant="h5" sx={{mb:1,mt:1}}>Contacto</Typography>
+                <Typography>{client.email}</Typography>
+                <Typography>{client.cellphone_number}</Typography>
               </CardContent>
               <CardActions>
                 <Button
@@ -146,9 +149,9 @@ export const FindClient = () => {
                   size="small"
                   variant="contained"
                   color="error"
-                  onClick={() => showDialog(client.rut, client.status)}
+                  onClick={() => showDialog(client.rut)}
                 >
-                  {client.status ? "Deshabilitar" : "Habilitar"}
+                  Eliminar
                 </Button>
               </CardActions>
             </Card>

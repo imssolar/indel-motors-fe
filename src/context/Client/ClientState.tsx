@@ -96,13 +96,13 @@ export const ClientState = ({ children }: stateProps) => {
     });
   };
 
-  const changeStatusClient = async (clientRut: string) => {
+  const deleteClient = async (clientRut: string) => {
     try {
       const {
         data: { message },
       } = await api.delete(`/account/${clientRut}`);
       dispatch({
-        type: "DISABLED_CLIENT",
+        type: "DELETE_CLIENT",
         
       });
     } catch (error) {
@@ -120,7 +120,7 @@ export const ClientState = ({ children }: stateProps) => {
         findCLient,
         clearClientFinder,
         messageError,
-        changeStatusClient,
+        deleteClient,
       }}
     >
       {children}

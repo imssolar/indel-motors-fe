@@ -8,7 +8,7 @@ type ClientActionType =
   | { type: "FIND_CLIENT"; payload: Client }
   | { type: "CLEAR_CLIENT" }
   | { type: "ERROR_CLIENT"; payload: string }
-  | { type: "DISABLED_CLIENT"; };
+  | { type: "DELETE_CLIENT"; };
 
 
 export const ClientReducer = (state: state, action: ClientActionType) => {
@@ -52,7 +52,7 @@ export const ClientReducer = (state: state, action: ClientActionType) => {
         client: null,
       };
 
-    case "DISABLED_CLIENT":
+    case "DELETE_CLIENT":
       return{
         ...state,
         // message:action.payload
