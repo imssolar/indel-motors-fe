@@ -1,9 +1,11 @@
 
-import { BsFillPersonLinesFill } from "react-icons/bs";
-import DeleteIcon from '@mui/icons-material/Delete';
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import React from "react";
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import SearchIcon from '@mui/icons-material/Search';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import BuildIcon from '@mui/icons-material/Build';
+import CarRepairIcon from '@mui/icons-material/CarRepair';
+import BackupTableIcon from '@mui/icons-material/BackupTable';
 interface PageConstant {
   name: string;
   path: string;
@@ -15,7 +17,7 @@ export const clientPages: PageConstant[] = [
   {
     name: "Buscar Cliente",
     path: "/client-find",
-    icon: <PersonSearchIcon/>
+    icon: <SearchIcon/>
 
   },
   {
@@ -27,51 +29,51 @@ export const clientPages: PageConstant[] = [
 
 export const vehiclePages: PageConstant[] = [
   {
-    name: "Listar Vehículos",
+    name: "Buscar Vehículos",
     path: "/vehicle-list",
-    icon: BsFillPersonLinesFill,
+    icon: <SearchIcon/>,
   },
   {
     name: "Agregar Vehículo",
     path: "/vehicle",
-    icon: BsFillPersonLinesFill,
+    icon: <CarRepairIcon/>,
   },
 ];
 
 export const workOrderPages: PageConstant[] = [
   {
-    name: "Listar órdenes de trabajo",
+    name: "Buscar Orden de Trabajo",
     path: "/orders-list",
-    icon: BsFillPersonLinesFill,
+    icon: <SearchIcon/>,
   },
   {
-    name: "Agregar orden de trabajo",
+    name: "Agregar Orden de Trabajo",
     path: "/work-order",
-    icon: BsFillPersonLinesFill,
+    icon: <NoteAddIcon/>,
   },
 ];
 export const sparePages: PageConstant[] = [
   {
-    name: "Listar Repuestos",
+    name: "Buscar Repuesto",
     path: "/spare-list",
-    icon: BsFillPersonLinesFill,
+    icon: <SearchIcon/>,
   },
   {
     name: "Agregar Repuesto",
     path: "/spare",
-    icon: BsFillPersonLinesFill,
+    icon: <BuildIcon/>,
   },
 ];
 
 export const spareGroupPages: PageConstant[] = [
   {
-    name: "Lista Grupos de Repuesto",
+    name: "Buscar Grupos de Repuesto",
     path: "/spare-group-list",
-    icon: BsFillPersonLinesFill,
+    icon: <SearchIcon/>,
   },
   {
     name: "Agregar Grupo de Repuesto",
     path: "/spare-group",
-    icon: BsFillPersonLinesFill,
+    icon: <BackupTableIcon/>,
   },
 ];
