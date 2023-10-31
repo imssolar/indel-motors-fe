@@ -30,7 +30,7 @@ export const clientPages: PageConstant[] = [
 export const vehiclePages: PageConstant[] = [
   {
     name: "Buscar Vehículos",
-    path: "/vehicle-list",
+    path: "/vehicle-find",
     icon: <SearchIcon/>,
   },
   {

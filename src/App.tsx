@@ -1,9 +1,17 @@
-import { Client, Login, Menu, EditClient } from "./Pages";
+import {
+  Client,
+  Login,
+  Menu,
+  EditClient,
+  AddVehicle,
+  FindVehicle,
+} from "./Pages";
 import { AuthState } from "./context/Auth/AuthState";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ClientState } from "./context/Client/ClientState";
 import "./App.css";
 import { FindClient } from "./Pages/Client/FindClient";
+import { VehicleState } from "./context/Vehicle/VehicleState";
 
 function App() {
   const routes = createBrowserRouter([
@@ -21,22 +29,32 @@ function App() {
     },
     {
       path: "/menu",
-      element: <Menu/>,
+      element: <Menu />,
     },
     {
-      path:"/client-find",
-      element:<FindClient/>
+      path: "/client-find",
+      element: <FindClient />,
     },
     {
-      path:"/client-edit",
-      element:<EditClient/>
-    }
+      path: "/client-edit",
+      element: <EditClient />,
+    },
+    {
+      path: "/vehicle-find",
+      element: <FindVehicle />,
+    },
+    {
+      path: "/vehicle",
+      element: <AddVehicle />,
+    },
   ]);
 
   return (
     <AuthState>
       <ClientState>
-        <RouterProvider router={routes} />
+        <VehicleState>
+          <RouterProvider router={routes} />
+        </VehicleState>
       </ClientState>
     </AuthState>
   );

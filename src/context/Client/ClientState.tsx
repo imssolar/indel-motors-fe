@@ -3,6 +3,7 @@ import { Client, ClientCreate } from "../../types/client";
 import { ClientContext } from "./ClientContext";
 import api from "../../api";
 import { ClientReducer } from "./ClientReducer";
+import { Message } from "../../types/message";
 
 interface stateProps {
   children: React.ReactNode;
@@ -11,13 +12,13 @@ interface stateProps {
 export interface state {
   client: Client | null;
   clients: Client[];
-  message: string;
+  message: Message;
 }
 
 const INITIAL_STATE: state = {
   client: null,
   clients: [],
-  message: "",
+  message: {},
 };
 
 export const ClientState = ({ children }: stateProps) => {
@@ -68,14 +69,14 @@ export const ClientState = ({ children }: stateProps) => {
   const findCLient = async (clientRut: string) => {
     try {
       const { data } = await api.get(`/account/${clientRut}`);
-      const { message } = data;
-      if (message) {
-        messageError(message);
+      const { message, type } = data;
+      if (type === "notFound") {
+        messageToShow({ text: message, type });
         return;
       }
       dispatch({
         type: "FIND_CLIENT",
-        payload: data,
+        payload: data.client,
       });
     } catch (error: any) {
       console.log(error);
@@ -88,7 +89,7 @@ export const ClientState = ({ children }: stateProps) => {
     });
   };
 
-  const messageError = (message: string) => {
+  const messageToShow = (message: Message) => {
     console.log("message error");
     dispatch({
       type: "ERROR_CLIENT",
@@ -98,12 +99,9 @@ export const ClientState = ({ children }: stateProps) => {
 
   const deleteClient = async (clientRut: string) => {
     try {
-      const {
-        data: { message },
-      } = await api.delete(`/account/${clientRut}`);
+      const { data } = await api.delete(`/account/${clientRut}`);
       dispatch({
         type: "DELETE_CLIENT",
-        
       });
     } catch (error) {
       console.log(error);
@@ -119,7 +117,7 @@ export const ClientState = ({ children }: stateProps) => {
         editClient,
         findCLient,
         clearClientFinder,
-        messageError,
+        messageToShow,
         deleteClient,
       }}
     >

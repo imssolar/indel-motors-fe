@@ -42,10 +42,10 @@ export const FindClient = () => {
   }, []);
 
   useEffect(() => {
-    if (message) {
+    if (message.text && message.type === "notFound") {
       Swal.fire({
         title: "No encontrado",
-        text: `${message}`,
+        text: `${message.text}`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -60,7 +60,7 @@ export const FindClient = () => {
         }
       });
     }
-  }, [message]);
+  }, [message?.text]);
 
   const showDialog = (clientRut: string) => {
     Swal.fire({
@@ -125,14 +125,18 @@ export const FindClient = () => {
                   {client.names} {client.surnames}
                 </Typography>
                 <Divider />
-                <Typography variant="h5" sx={{mt:1,mb:1}}>Datos Personales</Typography>
+                <Typography variant="h5" sx={{ mt: 1, mb: 1 }}>
+                  Datos Personales
+                </Typography>
                 <Typography sx={{ mt: 1 }} component="div">
                   {client.rut}
                 </Typography>
                 <Typography>{client.address}</Typography>
                 <Typography>{client.district}</Typography>
                 <Divider />
-                <Typography variant="h5" sx={{mb:1,mt:1}}>Contacto</Typography>
+                <Typography variant="h5" sx={{ mb: 1, mt: 1 }}>
+                  Contacto
+                </Typography>
                 <Typography>{client.email}</Typography>
                 <Typography>{client.cellphone_number}</Typography>
               </CardContent>
