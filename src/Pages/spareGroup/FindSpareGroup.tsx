@@ -12,12 +12,11 @@ import {
   CardContent,
   CardActions,
   Divider,
+  CardMedia,
 } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
-import { Client, ClientCreate } from "../../types/client";
-import { useContext, useEffect, useState } from "react";
-import { ClientContext } from "../../context/Client/ClientContext";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
 import Swal from "sweetalert2";
 import { spareGroupContext } from "../../context/SpareGroup/spareGroupContext";
 
@@ -28,8 +27,13 @@ interface IFormInput {
 export const FindSpareGroup = () => {
   const { handleSubmit, register } = useForm<IFormInput>();
 
-  const { spareGroup,message, getSpareGroup, clearSpareGroup,deleteSpareGroup } =
-    useContext(spareGroupContext);
+  const {
+    spareGroup,
+    message,
+    getSpareGroup,
+    clearSpareGroup,
+    deleteSpareGroup,
+  } = useContext(spareGroupContext);
 
   const navigate = useNavigate();
 
@@ -105,7 +109,7 @@ export const FindSpareGroup = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Grid container spacing={3} xs={12}>
-              <Grid item >
+              <Grid item>
                 <TextField
                   required
                   fullWidth
@@ -120,14 +124,25 @@ export const FindSpareGroup = () => {
             </Button>
           </Box>
           {spareGroup && (
-            <Card sx={{ minWidth: 275 }}>
+            <Card sx={{ minWidth: 275, maxWidth: 345 }}>
+              <CardMedia
+                component="img"
+                height="160"
+                image={"src/assets/images/sparegroup_background.jpg"}
+              />
               <CardContent>
                 <Typography sx={{ mb: 1 }} variant="h5" component="div">
-                  Nombre: {spareGroup.name} 
+                  Grupo de Repuesto
                 </Typography>
-                <Divider />
                 <Typography variant="h5" sx={{ mt: 1, mb: 1 }}>
-                  Descripción:{spareGroup.description}
+                  {spareGroup.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  textAlign="justify"
+                >
+                  {spareGroup.description}
                 </Typography>
               </CardContent>
               <CardActions>

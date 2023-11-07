@@ -31,16 +31,22 @@ export const SpareGroupState = ({ children }: spareGroupProps) => {
         type: "ADD_SPAREGROUP",
       });
       messageToShow({ text: data.message, type: data.type });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const { message, type } = error.response.data;
+      messageToShow({ text: message, type });
     }
   };
-  const getSpareGroup = async (id: string) => {
+  const getSpareGroup = async (name: string) => {
     try {
-      const { data } = await api.get(`spareGroup/${id}`);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
+      const { data } = await api.get(`spareGroup/${name}`);
+      dispatch({
+        type: "GET_SPAREGROUP",
+        payload: data,
+      });
+    } catch (error: any) {
+      const { message, type } = error.response.data;
+      messageToShow({ text: message, type });
+      return;
     }
   };
 
@@ -52,12 +58,12 @@ export const SpareGroupState = ({ children }: spareGroupProps) => {
 
   const editSpareGroup = async (spareGroupEdit: newSpareGroup) => {};
 
-  const deleteSpareGroup = async (id: string) => {
+  const deleteSpareGroup = async (name: string) => {
     try {
-      const {data} = await api.delete(`spareGroup/${id}`)
-      console.log(data)
+      const { data } = await api.delete(`spareGroup/${name}`);
+      console.log(data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -77,7 +83,7 @@ export const SpareGroupState = ({ children }: spareGroupProps) => {
         editSpareGroup,
         deleteSpareGroup,
         messageToShow,
-        clearSpareGroup
+        clearSpareGroup,
       }}
     >
       {children}
