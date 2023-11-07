@@ -11,7 +11,7 @@ import { Layout } from "../../components/Layout/Layout";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { ClientCreate } from "../../types/client";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ClientContext } from "../../context/Client/ClientContext";
 import Swal from "sweetalert2";
 interface IFormInput {
@@ -27,16 +27,32 @@ interface IFormInput {
 export const EditClient = () => {
   const { handleSubmit, register } = useForm<IFormInput>();
 
-  const { editClient, client: clientToEdit } = useContext(ClientContext);
+  const {
+    editClient,
+    client: clientToEdit,
+    message,
+  } = useContext(ClientContext);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     editClient(formData);
-    Swal.fire({
-      icon: "success",
-      title: "",
-      text: "El cliente ha sido editado con éxito",
-    });
   };
+
+  useEffect(() => {
+    if (message.text && message.type === "info") {
+      Swal.fire({
+        icon: "success",
+        title: "Buen trabajo!",
+        text: `${message.text}`,
+      });
+    }
+    if (message.text && message.type === "error") {
+      Swal.fire({
+        icon: "error",
+        title: "Ooops!",
+        text: `${message.text}`,
+      });
+    }
+  }, [message.text]);
 
   return (
     <Layout>
@@ -63,13 +79,13 @@ export const EditClient = () => {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextField
-                  sx={{opacity:"0.5"}}
+                    sx={{ opacity: "0.5" }}
                     fullWidth
                     id="rut"
                     label="Rut cliente"
                     {...register("rut")}
                     defaultValue={clientToEdit.rut}
-                    inputProps={{ readOnly: true,disableUnderline:true }}
+                    inputProps={{ readOnly: true, disableUnderline: true }}
                     // disabled
                   />
                 </Grid>

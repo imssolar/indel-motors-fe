@@ -8,7 +8,7 @@ type ClientActionType =
   | { type: "EDIT_CLIENT"; payload: Message }
   | { type: "FIND_CLIENT"; payload: Client }
   | { type: "CLEAR_CLIENT" }
-  | { type: "ERROR_CLIENT"; payload: Message }
+  | { type: "MESSAGE_CLIENT"; payload: Message }
   | { type: "DELETE_CLIENT" };
 
 export const ClientReducer = (state: state, action: ClientActionType) => {
@@ -22,7 +22,6 @@ export const ClientReducer = (state: state, action: ClientActionType) => {
     case "ADD_CLIENT":
       return {
         ...state,
-        // client: action.payload,
       };
 
     case "EDIT_CLIENT":
@@ -45,7 +44,7 @@ export const ClientReducer = (state: state, action: ClientActionType) => {
         message: {},
       };
 
-    case "ERROR_CLIENT":
+    case "MESSAGE_CLIENT":
       return {
         ...state,
         message: { text: action.payload.text, type: action.payload.type },

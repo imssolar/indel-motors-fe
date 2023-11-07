@@ -38,16 +38,20 @@ export const ClientState = ({ children }: stateProps) => {
 
   const addClient = async (clientToCreate: ClientCreate) => {
     try {
-      await api.post("/account", clientToCreate, {
+      const { data } = await api.post("/account", clientToCreate, {
         headers: {
           "x-token": localStorage.getItem("token"),
         },
       });
+      console.log(data);
       dispatch({
         type: "ADD_CLIENT",
       });
-    } catch (error) {
-      console.log(error);
+      messageToShow({ text: data.message, type: data.type });
+    } catch (error: any) {
+      const { message, type } = error.response.data;
+      messageToShow({ text: message, type });
+      return;
     }
   };
 
@@ -57,12 +61,16 @@ export const ClientState = ({ children }: stateProps) => {
         `/account/${clientToEdit.rut}`,
         clientToEdit
       );
+      const { message, type } = data;
+      console.log(message, type);
       dispatch({
         type: "EDIT_CLIENT",
         payload: data,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const { message, type } = error.response.data;
+      messageToShow({ text: message, type });
+      return;
     }
   };
 
@@ -90,9 +98,8 @@ export const ClientState = ({ children }: stateProps) => {
   };
 
   const messageToShow = (message: Message) => {
-    console.log("message error");
     dispatch({
-      type: "ERROR_CLIENT",
+      type: "MESSAGE_CLIENT",
       payload: message,
     });
   };

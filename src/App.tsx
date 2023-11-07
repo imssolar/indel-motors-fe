@@ -12,7 +12,10 @@ import { ClientState } from "./context/Client/ClientState";
 import "./App.css";
 import { FindClient } from "./Pages/Client/FindClient";
 import { VehicleState } from "./context/Vehicle/VehicleState";
-
+import { AddSpareGroup } from "./Pages/spareGroup/AddSpareGroup";
+import { SpareGroupState } from "./context/SpareGroup/SpareGroupState";
+import { EditSpareGroup } from "./Pages/spareGroup/EditSpareGroup";
+import { FindSpareGroup } from "./Pages/spareGroup/FindSpareGroup";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -47,13 +50,28 @@ function App() {
       path: "/vehicle",
       element: <AddVehicle />,
     },
+    {
+      path:"/sparegroup-list",
+      element:<FindSpareGroup/>
+    },
+
+    {
+      path: "/spare-group",
+      element: <AddSpareGroup />,
+    },
+    {
+      path: "/sparegroup-edit",
+      element: <EditSpareGroup />,
+    },
   ]);
 
   return (
     <AuthState>
       <ClientState>
         <VehicleState>
-          <RouterProvider router={routes} />
+          <SpareGroupState>
+            <RouterProvider router={routes} />
+          </SpareGroupState>
         </VehicleState>
       </ClientState>
     </AuthState>

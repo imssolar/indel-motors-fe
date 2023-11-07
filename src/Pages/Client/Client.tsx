@@ -18,6 +18,7 @@ import { MessageAlert } from "../../components/MessageAlert/MessageAlert";
 import { useContext, useEffect, useState } from "react";
 import { ClientContext } from "../../context/Client/ClientContext";
 import { Layout } from "../../components/Layout/Layout";
+import Swal from "sweetalert2";
 
 interface IFormInput {
   rut: string;
@@ -33,7 +34,7 @@ export const Client = () => {
 
   const { handleSubmit, register } = useForm<IFormInput>();
 
-  const { addClient, getClients } = useContext(ClientContext);
+  const { addClient, getClients, message } = useContext(ClientContext);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     console.log(formData);
@@ -43,6 +44,24 @@ export const Client = () => {
   useEffect(() => {
     getClients();
   }, []);
+
+  useEffect(() => {
+    if (message.text && message.type === "error") {
+      console.log("type error")
+      Swal.fire({
+        icon: "error",
+        title: "Ooops!",
+        text: `${message.text}`,
+      });
+    }
+    if(message.text && message.type === "info"){
+      Swal.fire({
+        icon: "success",
+        title: "Buen trabajo!",
+        text: `${message.text}`,
+      });
+    }
+  }, [message.text || message.type]);
 
   return (
     <Layout>

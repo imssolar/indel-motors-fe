@@ -15,29 +15,31 @@ import {
 } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
+import { Client, ClientCreate } from "../../types/client";
 import { useContext, useEffect, useState } from "react";
+import { ClientContext } from "../../context/Client/ClientContext";
 import Swal from "sweetalert2";
-import { VehicleContext } from "../../context/Vehicle/VehicleContext";
+import { spareGroupContext } from "../../context/SpareGroup/spareGroupContext";
 
 interface IFormInput {
-  license_plate: string;
+  name: string;
 }
 
-export const FindVehicle = () => {
+export const FindSpareGroup = () => {
   const { handleSubmit, register } = useForm<IFormInput>();
 
-  const { vehicle, message, getVehicle, clearVehicleFinder } =
-    useContext(VehicleContext);
+  const { spareGroup,message, getSpareGroup, clearSpareGroup,deleteSpareGroup } =
+    useContext(spareGroupContext);
 
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
-    await getVehicle(formData.license_plate);
+    await getSpareGroup(formData.name);
     console.log(formData);
   };
 
   useEffect(() => {
-    clearVehicleFinder();
+    clearSpareGroup();
   }, []);
 
   useEffect(() => {
@@ -49,13 +51,13 @@ export const FindVehicle = () => {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "¿Desea crear el vehículo?",
+        confirmButtonText: "¿Desea crear el grupo de repuesto?",
       }).then((result) => {
         if (result.isConfirmed) {
-          //   clearClientFinder();
-          navigate("/vehicle");
+          clearSpareGroup();
+          navigate("/spare-group");
         } else {
-          //   clearClientFinder();
+          clearSpareGroup();
         }
       });
     }
@@ -63,8 +65,8 @@ export const FindVehicle = () => {
 
   const showDialog = (clientRut: string) => {
     Swal.fire({
-      title: "Eliminar Vehículo",
-      text: "Confirme la eliminación del vehículo",
+      title: "Eliminar Grupo de repuesto",
+      text: "Confirme la eliminación del grupo de repuesto",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -73,10 +75,10 @@ export const FindVehicle = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        // clearClientFinder();
-        // deleteClient(clientRut);
+        clearSpareGroup();
+        deleteSpareGroup(clientRut);
       } else {
-        // clearClientFinder();
+        clearSpareGroup();
       }
     });
   };
@@ -94,7 +96,7 @@ export const FindVehicle = () => {
           }}
         >
           <Typography component={"h1"} variant="h5">
-            Buscar Vehículo
+            Buscar Grupo de Repuesto
           </Typography>
           <Box
             component={"form"}
@@ -103,13 +105,13 @@ export const FindVehicle = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Grid container spacing={3} xs={12}>
-              <Grid item>
+              <Grid item >
                 <TextField
                   required
                   fullWidth
-                  id="license_plate"
-                  label="Patente"
-                  {...register("license_plate")}
+                  id="name"
+                  label="Nombre"
+                  {...register("name")}
                 />
               </Grid>
             </Grid>
@@ -117,29 +119,16 @@ export const FindVehicle = () => {
               Buscar
             </Button>
           </Box>
-          {vehicle && (
+          {spareGroup && (
             <Card sx={{ minWidth: 275 }}>
               <CardContent>
                 <Typography sx={{ mb: 1 }} variant="h5" component="div">
-                  Datos del Vehículo
+                  Nombre: {spareGroup.name} 
                 </Typography>
-                <Typography>{vehicle.license_plate}</Typography>
-                <Typography>{vehicle.brand}</Typography>
                 <Divider />
                 <Typography variant="h5" sx={{ mt: 1, mb: 1 }}>
-                  Datos Personales
+                  Descripción:{spareGroup.description}
                 </Typography>
-                {/* <Typography sx={{ mt: 1 }} component="div">
-                  {client.rut}
-                </Typography>
-                <Typography>{client.address}</Typography>
-                <Typography>{client.district}</Typography> */}
-                <Divider />
-                <Typography variant="h5" sx={{ mb: 1, mt: 1 }}>
-                  Contacto
-                </Typography>
-                {/* <Typography>{client.email}</Typography>
-                <Typography>{client.cellphone_number}</Typography> */}
               </CardContent>
               <CardActions>
                 <Button
@@ -154,7 +143,7 @@ export const FindVehicle = () => {
                   size="small"
                   variant="contained"
                   color="error"
-                  //   onClick={() => showDialog(client.rut)}
+                  onClick={() => showDialog(spareGroup.name)}
                 >
                   Eliminar
                 </Button>

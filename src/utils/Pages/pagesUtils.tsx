@@ -68,7 +68,7 @@ export const sparePages: PageConstant[] = [
 export const spareGroupPages: PageConstant[] = [
   {
     name: "Buscar Grupos de Repuesto",
-    path: "/spare-group-list",
+    path: "/sparegroup-list",
     icon: <SearchIcon/>,
   },
   {

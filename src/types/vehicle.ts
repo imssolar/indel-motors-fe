@@ -1,3 +1,5 @@
+import { ClientCreate } from "./client";
+
 export interface Vehicle {
   license_plate: string;
   brand: string;
@@ -5,4 +7,11 @@ export interface Vehicle {
   year_production: number;
   vin_number: number;
   rut_client: string;
+}
+
+export interface vehicleResponse extends Vehicle {
+  createdAt: string;
+  updatedAt: string;
+  rut_client: string;
+  client: ClientCreate;
 }
