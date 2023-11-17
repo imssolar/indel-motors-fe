@@ -1,12 +1,14 @@
+import { Brand } from "../../types/brand";
 import { vehicleResponse } from "../../types/vehicle";
 import { state } from "./VehicleState";
 
-type vehicleActionType =
+type VehicleActionType =
   | { type: "ADD_VEHICLE" }
   | { type: "GET_VEHICLE"; payload: vehicleResponse }
-  | { type: "CLEAR_VEHICLE" };
+  | { type: "CLEAR_VEHICLE" }
+  | { type: "GET_BRANDS"; payload: Brand[] };
 
-export const VehicleReducer = (state: state, action: vehicleActionType) => {
+export const VehicleReducer = (state: state, action: VehicleActionType) => {
   switch (action.type) {
     case "ADD_VEHICLE":
       return {
@@ -24,6 +26,12 @@ export const VehicleReducer = (state: state, action: vehicleActionType) => {
         ...state,
         vehicle: {},
         message: {},
+      };
+
+    case "GET_BRANDS":
+      return {
+        ...state,
+        brands: action.payload,
       };
 
     default:

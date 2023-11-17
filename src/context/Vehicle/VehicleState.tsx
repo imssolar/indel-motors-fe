@@ -4,6 +4,7 @@ import { VehicleContext } from "./VehicleContext";
 import { Vehicle, vehicleResponse } from "../../types/vehicle";
 import api from "../../api";
 import { Message } from "../../types/message";
+import { Brand } from "../../types/brand";
 interface stateProps {
   children: React.ReactNode;
 }
@@ -11,11 +12,13 @@ interface stateProps {
 export interface state {
   vehicle: vehicleResponse | null;
   message: Message;
+  brands: Brand[];
 }
 
 const INITIAL_STATE: state = {
   vehicle: null,
   message: {},
+  brands: [],
 };
 
 export const VehicleState = ({ children }: stateProps) => {
@@ -43,9 +46,10 @@ export const VehicleState = ({ children }: stateProps) => {
   const getVehicle = async (license: string) => {
     try {
       const { data } = await api.get(`/vehicle/${license}`);
+      console.log(data.vehicle);
       dispatch({
         type: "GET_VEHICLE",
-        payload: data,
+        payload: data.vehicle,
       });
     } catch (error) {
       console.log(error);
@@ -59,8 +63,19 @@ export const VehicleState = ({ children }: stateProps) => {
   const clearVehicleFinder = async () => {
     dispatch({
       type: "CLEAR_VEHICLE",
-      payload
     });
+  };
+
+  const getBrands = async () => {
+    try {
+      const { data } = await api.get("/brand");
+      dispatch({
+        type: "GET_BRANDS",
+        payload: data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -73,6 +88,7 @@ export const VehicleState = ({ children }: stateProps) => {
         updateVehicle,
         deleteVehicle,
         clearVehicleFinder,
+        getBrands,
       }}
     >
       {children}
