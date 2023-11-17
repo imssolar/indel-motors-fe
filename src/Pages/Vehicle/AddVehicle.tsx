@@ -14,9 +14,11 @@ import {
 } from "@mui/material";
 import { Layout } from "../../components/Layout/Layout";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useContext, useState } from "react";
-import { brands } from "../../data/brands";
+import { useContext, useEffect, useState } from "react";
 import { VehicleContext } from "../../context/Vehicle/VehicleContext";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validateRut } from "../../Helpers/ValidateRut";
 
 interface IVehicleInput {
   license_plate: string;
@@ -26,10 +28,34 @@ interface IVehicleInput {
   vin_number: number;
   rut_client: string;
 }
+
+const schema = yup.object({
+  license_plate: yup.string().required("El nombre es obligatorio"),
+  brand: yup.string().required("El brand es obligatorio"),
+  model: yup.string().required("El model es obligatorio"),
+  year_production: yup.number().required("El year_production es obligatorio"),
+  vin_number: yup.number().required("El vin_number es obligatorio"),
+  rut_client: yup
+    .string()
+    .required("El rut_client es obligatorio")
+    .test("name", "El Rut ingresado no es válido", (value) => {
+      console.log(value)
+      // if (value.length >= 8) return validateRut(value);
+      // console.log(value)
+      // return false
+    
+    }),
+
+});
+
 export const AddVehicle = () => {
   const [brandSelect, setBrand] = useState("");
-  const { handleSubmit, register } = useForm<IVehicleInput>();
-  const {addVehicle} = useContext(VehicleContext)
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<IVehicleInput>({ resolver: yupResolver(schema) });
+  const { brands, addVehicle, getBrands } = useContext(VehicleContext);
 
   const handleChange = (event: SelectChangeEvent) => {
     setBrand(event.target.value as string);
@@ -37,8 +63,12 @@ export const AddVehicle = () => {
 
   const onSubmit: SubmitHandler<IVehicleInput> = async (formData) => {
     console.log(formData);
-    addVehicle(formData)
+    addVehicle(formData);
   };
+
+  useEffect(() => {
+    getBrands();
+  }, []);
 
   return (
     <Layout>
@@ -70,6 +100,7 @@ export const AddVehicle = () => {
                   label="Patente"
                   {...register("license_plate")}
                 />
+                {errors.license_plate && <p>{errors.license_plate.message}</p>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -79,19 +110,12 @@ export const AddVehicle = () => {
                   label="Rut asociado"
                   {...register("rut_client")}
                 />
+                {/* {errors.rut_client && <p>{errors.rut_client.message}</p>} */}
+
               </Grid>
               <Grid item xs={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="brand"
-                  label="Marca"
-                  {...register("brand")}
-                />
-              </Grid>
-              {/* <Grid item xs={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Marcas</InputLabel>
+                  <InputLabel id="demo-simple-select-label">Marca</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -100,12 +124,14 @@ export const AddVehicle = () => {
                     {...register("brand")}
                     onChange={handleChange}
                   >
-                    {brands.map((brand) => (
-                      <MenuItem value={brand}>FORD</MenuItem>
+                    {brands.map((brands) => (
+                      <MenuItem key={brands.id} value={brands.name}>
+                        {brands.name}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-              </Grid> */}
+              </Grid>
 
               <Grid item xs={6}>
                 <TextField
