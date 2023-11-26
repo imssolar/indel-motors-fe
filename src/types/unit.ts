@@ -8,7 +8,6 @@ export interface Unit {
 }
 
 export interface UnitToCreate {
-  description: string;
   name_unit: string;
-  status: boolean;
+  description?: string;
 }

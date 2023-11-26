@@ -16,49 +16,41 @@ import { Layout } from '../../components/Layout/Layout'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useContext, useEffect, useState } from 'react'
 import { VehicleContext } from '../../context/Vehicle/VehicleContext'
-import * as yup from 'yup'
+import { schema } from '../../schemas/vehicleSchema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { validateRut } from '../../Helpers/ValidateRut'
 
 interface IVehicleInput {
 	license_plate: string
 	brand: string
 	model: string
 	year_production: number
-	vin_number: number
+	vin_number: string
 	rut_client: string
 }
-
-const schema = yup.object({
-	license_plate: yup.string().required('El nombre es obligatorio'),
-	brand: yup.string().required('El brand es obligatorio'),
-	model: yup.string().required('El model es obligatorio'),
-	year_production: yup.number().required('El year_production es obligatorio'),
-	vin_number: yup.number().required('El vin_number es obligatorio'),
-	rut_client: yup
-		.string()
-		.required('El rut_client es obligatorio')
-		.test('name', (value) => {
-			console.log(value)
-		}),
-})
 
 export const AddVehicle = () => {
 	const [brandSelect, setBrand] = useState('')
 	const {
 		handleSubmit,
 		register,
-		formState: { errors },
+		formState: { errors, isValid },
+		watch,
+		setValue,
+		trigger,
 	} = useForm<IVehicleInput>({ resolver: yupResolver(schema) })
 	const { brands, addVehicle, getBrands } = useContext(VehicleContext)
 
 	const handleChange = (event: SelectChangeEvent) => {
+		setValue('brand', event.target.value)
+		console.log(event.target.value)
 		setBrand(event.target.value as string)
 	}
 
 	const onSubmit: SubmitHandler<IVehicleInput> = async (formData) => {
-		console.log('submit')
-		console.log(formData.brand)
+		await trigger()
+		console.log('hola')
+		console.log(formData)
+		// console.log(formData.brand)
 		addVehicle(formData)
 	}
 
@@ -92,7 +84,7 @@ export const AddVehicle = () => {
 								<TextField
 									required
 									fullWidth
-									id="licence_plate"
+									id="license_plate"
 									label="Patente"
 									{...register('license_plate')}
 								/>
@@ -106,7 +98,7 @@ export const AddVehicle = () => {
 									label="Rut asociado"
 									{...register('rut_client')}
 								/>
-								{/* {errors.rut_client && <p>{errors.rut_client.message}</p>} */}
+								{errors.rut_client && <p>{errors.rut_client.message}</p>}
 							</Grid>
 							<Grid item xs={6}>
 								<FormControl fullWidth>
@@ -127,6 +119,7 @@ export const AddVehicle = () => {
 									</Select>
 								</FormControl>
 							</Grid>
+							{errors.brand && <p>{errors.brand.message}</p>}
 
 							<Grid item xs={6}>
 								<TextField
@@ -137,6 +130,8 @@ export const AddVehicle = () => {
 									{...register('model')}
 								/>
 							</Grid>
+							{errors.model && <p>{errors.model.message}</p>}
+
 							<Grid item xs={12}>
 								<TextField
 									required
@@ -146,6 +141,10 @@ export const AddVehicle = () => {
 									{...register('year_production')}
 								/>
 							</Grid>
+							{errors.year_production && (
+								<p>{errors.year_production.message}</p>
+							)}
+
 							<Grid item xs={12}>
 								<TextField
 									required
@@ -155,6 +154,7 @@ export const AddVehicle = () => {
 									{...register('vin_number')}
 								/>
 							</Grid>
+							{errors.vin_number && <p>{errors.vin_number.message}</p>}
 						</Grid>
 						<Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
 							Guardar

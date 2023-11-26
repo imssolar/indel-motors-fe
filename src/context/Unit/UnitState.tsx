@@ -32,6 +32,7 @@ export const UnitState = ({ children }: stateProps) => {
 	}
 
 	const addUnit = async (unit: UnitToCreate) => {
+		console.log(unit)
 		try {
 			const { data } = await api.post('/unit', unit)
 			console.log(data)
@@ -46,7 +47,7 @@ export const UnitState = ({ children }: stateProps) => {
 
 	const editUnit = async (unit: UnitToCreate) => {
 		try {
-			const { data } = await api.put(`/unit/${unit}`, unit)
+			const { data } = await api.put(`/unit/${unit.name_unit}`, unit)
 			dispatch({
 				type: 'EDIT_UNIT',
 				payload: data,
@@ -56,12 +57,15 @@ export const UnitState = ({ children }: stateProps) => {
 		}
 	}
 
-	const findUnit = async (unitName: string) => {
+	const UnitFind = async (unitName: string) => {
 		try {
-			const { data } = await api.get(`/unit/${unitName}`)
+			const {
+				data: { unit },
+			} = await api.get(`/unit/${unitName}`)
+			console.log(unit)
 			dispatch({
 				type: 'FIND_UNIT',
-				payload: data,
+				payload: unit,
 			})
 		} catch (error) {
 			console.log(error)
@@ -80,6 +84,12 @@ export const UnitState = ({ children }: stateProps) => {
 		}
 	}
 
+	const clearUnitFinder = () => {
+		dispatch({
+			type: 'CLEAR_UNIT',
+		})
+	}
+
 	const messageToShow = (message: Message) => {
 		dispatch({
 			type: 'MESSAGE_UNIT',
@@ -94,8 +104,9 @@ export const UnitState = ({ children }: stateProps) => {
 				getUnits,
 				editUnit,
 				addUnit,
-				findUnit,
+				UnitFind,
 				deleteUnit,
+				clearUnitFinder,
 				messageToShow,
 			}}
 		>

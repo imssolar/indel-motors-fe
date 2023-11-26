@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import * as yup from 'yup'
+import { validateDigitRut } from '../Helpers/validateDigitRut'
 
 export const clientSchema = yup.object({
 	rut: yup
@@ -8,7 +9,8 @@ export const clientSchema = yup.object({
 		.matches(
 			/\b\d{1,2}\.\d{3}\.\d{3}\-[K|k|0-9]/g,
 			'Formato incorrecto del Rut. Agregar puntos y guión'
-		),
+		)
+		.test('name',"Rut inválido",(value) => validateDigitRut(value)),
 	names: yup.string().required('El o los nombres del cliente son obligatorios'),
 	surnames: yup
 		.string()

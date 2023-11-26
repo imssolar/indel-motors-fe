@@ -26,13 +26,14 @@ export const VehicleState = ({ children }: stateProps) => {
 
 	const getVehicles = async () => {
 		try {
-			const { data } = await api.get('/vehicles')
+			const { data } = await api.get('/vehicle')
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
 	const addVehicle = async (vehicleToCreate: Vehicle) => {
+		console.log(vehicleToCreate)
 		try {
 			await api.post('/vehicle', vehicleToCreate)
 			dispatch({
@@ -46,7 +47,6 @@ export const VehicleState = ({ children }: stateProps) => {
 	const getVehicle = async (license: string) => {
 		try {
 			const { data } = await api.get(`/vehicle/${license}`)
-			console.log(data.vehicle)
 			dispatch({
 				type: 'GET_VEHICLE',
 				payload: data.vehicle,
