@@ -60,13 +60,13 @@ export const VehicleState = ({ children }: stateProps) => {
 
 	const deleteVehicle = async (licence: string) => {}
 
-	const clearVehicleFinder = async () => {
+	const clearVehicleFinder = async (): Promise<void> => {
 		dispatch({
 			type: 'CLEAR_VEHICLE',
 		})
 	}
 
-	const getBrands = async () => {
+	const getBrands = async (): Promise<void> => {
 		try {
 			const { data } = await api.get('/brand')
 			dispatch({

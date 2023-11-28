@@ -36,7 +36,7 @@ export const ClientState = ({ children }: stateProps) => {
 		}
 	}
 
-	const addClient = async (clientToCreate: ClientCreate) => {
+	const addClient = async (clientToCreate: ClientCreate): Promise<void> => {
 		try {
 			const { data } = await api.post('/account', clientToCreate, {
 				headers: {
@@ -55,7 +55,7 @@ export const ClientState = ({ children }: stateProps) => {
 		}
 	}
 
-	const editClient = async (clientToEdit: ClientCreate) => {
+	const editClient = async (clientToEdit: ClientCreate): Promise<void> => {
 		try {
 			const { data } = await api.put(
 				`/account/${clientToEdit.rut}`,
@@ -74,7 +74,7 @@ export const ClientState = ({ children }: stateProps) => {
 		}
 	}
 
-	const findCLient = async (clientRut: string) => {
+	const findCLient = async (clientRut: string): Promise<void> => {
 		try {
 			const { data } = await api.get(`/account/${clientRut}`)
 			const { message, type } = data
@@ -91,20 +91,20 @@ export const ClientState = ({ children }: stateProps) => {
 		}
 	}
 
-	const clearClientFinder = () => {
+	const clearClientFinder = (): void => {
 		dispatch({
 			type: 'CLEAR_CLIENT',
 		})
 	}
 
-	const messageToShow = (message: Message) => {
+	const messageToShow = (message: Message): void => {
 		dispatch({
 			type: 'MESSAGE_CLIENT',
 			payload: message,
 		})
 	}
 
-	const deleteClient = async (clientRut: string) => {
+	const deleteClient = async (clientRut: string): Promise<void> => {
 		try {
 			const { data } = await api.delete(`/account/${clientRut}`)
 			console.log(data)

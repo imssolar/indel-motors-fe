@@ -9,10 +9,11 @@ import {
 	Typography,
 	Button,
 } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { UnitContext } from '../../context/Unit/UnitContext'
 import { unitSchema } from '../../schemas/unitSchema'
 import { yupResolver } from '@hookform/resolvers/yup'
+import Swal from 'sweetalert2'
 
 interface IUnitInput {
 	name_unit: string
@@ -28,11 +29,28 @@ export const EditUnit = () => {
 		resolver: yupResolver(unitSchema),
 	})
 
-	const { unit, editUnit } = useContext(UnitContext)
+	const { unit, message, editUnit } = useContext(UnitContext)
 
 	const onSubmit: SubmitHandler<IUnitInput> = async (formData) => {
 		editUnit(formData)
 	}
+
+	useEffect((): void => {
+		if (message.text && message.type === 'info') {
+			Swal.fire({
+				icon: 'success',
+				title: 'Buen trabajo!',
+				text: `${message.text}`,
+			})
+		}
+		if (message.text && message.type === 'error') {
+			Swal.fire({
+				icon: 'error',
+				title: 'Ooops!',
+				text: `${message.text}`,
+			})
+		}
+	}, [message.text, message.type])
 
 	return (
 		<Layout>
@@ -62,7 +80,7 @@ export const EditUnit = () => {
 										fullWidth
 										id="name_unit"
 										label="Nombre de la unidad"
-										inputProps={{ readOnly: true, disableUnderline: true }}
+										inputProps={{ readOnly: true }}
 										sx={{ opacity: '0.5' }}
 										{...register('name_unit')}
 										defaultValue={unit.name_unit}

@@ -48,10 +48,13 @@ export const UnitState = ({ children }: stateProps) => {
 	const editUnit = async (unit: UnitToCreate) => {
 		try {
 			const { data } = await api.put(`/unit/${unit.name_unit}`, unit)
+			const { message, type } = data
+
 			dispatch({
 				type: 'EDIT_UNIT',
 				payload: data,
 			})
+			messageToShow({ text: message, type })
 		} catch (error) {
 			console.log(error)
 		}
@@ -75,10 +78,12 @@ export const UnitState = ({ children }: stateProps) => {
 	const deleteUnit = async (unitName: string) => {
 		const { data } = await api.delete(`/unit/${unitName}`)
 		console.log(data)
+		const { message, type } = data
 		try {
 			dispatch({
 				type: 'DELETE_UNIT',
 			})
+			messageToShow({ text: message, type })
 		} catch (error) {
 			console.log(error)
 		}

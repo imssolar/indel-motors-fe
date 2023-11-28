@@ -19,10 +19,8 @@ interface IFormInput {
 	name: string
 	cost: string
 	stock: string
-	cellphone_number: string
-	address: string
-	district: string
-	email: string
+	unit_id: string
+	sparegroup_id: string
 }
 
 export const AddSpare = () => {
@@ -36,7 +34,9 @@ export const AddSpare = () => {
 
 	const { addClient, getClients, message } = useContext(ClientContext)
 
-	const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
+	const onSubmit: SubmitHandler<IFormInput> = async (
+		formData: IFormInput
+	): Promise<void> => {
 		console.log(formData)
 		addClient(formData)
 	}
@@ -76,7 +76,7 @@ export const AddSpare = () => {
 					}}
 				>
 					<Typography component={'h1'} variant="h5">
-						Crear Cliente
+						Crear Repuesto
 					</Typography>
 					<Box
 						component={'form'}
