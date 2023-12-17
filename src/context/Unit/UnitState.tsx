@@ -22,7 +22,7 @@ const INITITAL_STATE: state = {
 export const UnitState = ({ children }: stateProps) => {
 	const [state, dispatch] = useReducer(UnitReducer, INITITAL_STATE)
 
-	const getUnits = async () => {
+	const getUnits = async (): Promise<void> => {
 		try {
 			const { data } = await api.get('/unit')
 			console.log(data)
@@ -31,51 +31,59 @@ export const UnitState = ({ children }: stateProps) => {
 		}
 	}
 
-	const addUnit = async (unit: UnitToCreate) => {
+	const addUnit = async (unit: UnitToCreate): Promise<void> => {
 		console.log(unit)
 		try {
 			const { data } = await api.post('/unit', unit)
-			console.log(data)
-
+			const { message, type } = data
+			console.log(message, type)
 			dispatch({
 				type: 'ADD_UNIT',
 			})
-		} catch (error) {
+			messageToShow({ text: message, type })
+		} catch (error: any) {
+			const { message, type } = error.response.data
+			messageToShow({ text: message, type })
 			console.log(error)
 		}
 	}
 
-	const editUnit = async (unit: UnitToCreate) => {
+	const editUnit = async (unit: UnitToCreate): Promise<void> => {
 		try {
 			const { data } = await api.put(`/unit/${unit.name_unit}`, unit)
 			const { message, type } = data
 
+			messageToShow({ text: message, type })
 			dispatch({
 				type: 'EDIT_UNIT',
-				payload: data,
+				payload: { message, type },
 			})
-			messageToShow({ text: message, type })
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-	const UnitFind = async (unitName: string) => {
+	const UnitFind = async (unitName: string): Promise<void> => {
 		try {
-			const {
-				data: { unit },
-			} = await api.get(`/unit/${unitName}`)
-			console.log(unit)
+			const { data } = await api.get(`/unit/${unitName}`)
+			const { message, type } = data
+			if (type === 'notFound') {
+				messageToShow({ text: message, type })
+				return
+			}
 			dispatch({
 				type: 'FIND_UNIT',
-				payload: unit,
+				payload: data.unit,
 			})
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error)
+			const { message, type } = error.response.data
+			messageToShow({ text: message, type })
+			return
 		}
 	}
 
-	const deleteUnit = async (unitName: string) => {
+	const deleteUnit = async (unitName: string): Promise<void> => {
 		const { data } = await api.delete(`/unit/${unitName}`)
 		console.log(data)
 		const { message, type } = data
@@ -84,18 +92,20 @@ export const UnitState = ({ children }: stateProps) => {
 				type: 'DELETE_UNIT',
 			})
 			messageToShow({ text: message, type })
-		} catch (error) {
-			console.log(error)
+		} catch (error: any) {
+			const { message, type } = error.response.data
+			messageToShow({ text: message, type })
+			return
 		}
 	}
 
-	const clearUnitFinder = () => {
+	const clearUnitFinder = (): void => {
 		dispatch({
 			type: 'CLEAR_UNIT',
 		})
 	}
 
-	const messageToShow = (message: Message) => {
+	const messageToShow = (message: Message): void => {
 		dispatch({
 			type: 'MESSAGE_UNIT',
 			payload: message,

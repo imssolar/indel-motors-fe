@@ -29,21 +29,24 @@ export const EditUnit = () => {
 		resolver: yupResolver(unitSchema),
 	})
 
-	const { unit, message, editUnit } = useContext(UnitContext)
+	const { unit, message, editUnit, clearUnitFinder } = useContext(UnitContext)
 
 	const onSubmit: SubmitHandler<IUnitInput> = async (formData) => {
-		editUnit(formData)
+		await editUnit(formData)
 	}
 
 	useEffect((): void => {
 		if (message.text && message.type === 'info') {
+			console.log('info')
 			Swal.fire({
 				icon: 'success',
 				title: 'Buen trabajo!',
 				text: `${message.text}`,
-			})
+			}).then((): void => clearUnitFinder())
 		}
 		if (message.text && message.type === 'error') {
+			console.log('info')
+
 			Swal.fire({
 				icon: 'error',
 				title: 'Ooops!',
@@ -51,7 +54,6 @@ export const EditUnit = () => {
 			})
 		}
 	}, [message.text, message.type])
-
 	return (
 		<Layout>
 			{unit && (

@@ -4,7 +4,7 @@ import { state } from './UnitState'
 
 type UnitActionType =
 	| { type: 'ADD_UNIT' }
-	| { type: 'EDIT_UNIT'; payload: Unit }
+	| { type: 'EDIT_UNIT';payload:{message:string,type:string}}
 	| { type: 'FIND_UNIT'; payload: Unit }
 	| { type: 'DELETE_UNIT' }
 	| { type: 'MESSAGE_UNIT'; payload: Message }
@@ -19,12 +19,13 @@ export const UnitReducer = (state: state, action: UnitActionType) => {
 		case 'EDIT_UNIT':
 			return {
 				...state,
-				payload: action.payload,
+				message:{text:action.payload.message,type:action.payload.type}
 			}
 		case 'FIND_UNIT':
 			return {
 				...state,
 				unit: action.payload,
+				message:{}
 			}
 		case 'DELETE_UNIT':
 			return {
@@ -40,6 +41,7 @@ export const UnitReducer = (state: state, action: UnitActionType) => {
 			return {
 				...state,
 				message: { text: action.payload.text, type: action.payload.type },
+				unit:null
 			}
 		default:
 			return state

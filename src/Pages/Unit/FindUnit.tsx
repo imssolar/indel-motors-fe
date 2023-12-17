@@ -18,14 +18,14 @@ import {
 	Typography,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import Swal from 'sweetalert2'
+import Swal, { SweetAlertResult } from 'sweetalert2'
 
 interface IUnitInput {
 	name_unit: string
 }
 
 export const FindUnit = () => {
-	const { unit, UnitFind, clearUnitFinder, deleteUnit } =
+	const { unit, message, UnitFind, clearUnitFinder, deleteUnit } =
 		useContext(UnitContext)
 
 	const {
@@ -34,8 +34,9 @@ export const FindUnit = () => {
 		formState: { errors },
 	} = useForm<IUnitInput>({ resolver: yupResolver(unitSchema) })
 
-	const onSubmit: SubmitHandler<IUnitInput> = async (unitFormData) => {
-		console.log(unitFormData)
+	const onSubmit: SubmitHandler<IUnitInput> = async (
+		unitFormData: IUnitInput
+	): Promise<void> => {
 		UnitFind(unitFormData.name_unit)
 	}
 	const navigate = useNavigate()
@@ -44,20 +45,45 @@ export const FindUnit = () => {
 		clearUnitFinder()
 	}, [])
 
-	const showDialog = (unitName: string) => {
+	useEffect((): void => {
+		if (message.text && message.type === 'notFound') {
+			Swal.fire({
+				title: 'No encontrado',
+				text: `${message.text}`,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: '¿Desea crear el tipo de unidad?',
+			}).then((result: SweetAlertResult<void>): void => {
+				clearUnitFinder()
+				if (result.isConfirmed) {
+					navigate('/unit')
+				}
+			})
+		} else if (message.text && message.type === 'info') {
+			Swal.fire({
+				icon: 'success',
+				title: 'Buen trabajo!',
+				text: `${message.text}`,
+			})
+		}
+	}, [message?.text])
+
+	const showDialog = (nameUnit: string): void => {
 		Swal.fire({
-			title: 'Eliminar Unidad',
-			text: `Confirme la eliminación de la Unidad ${unitName}`,
+			title: 'Eliminar Tipo de Unidad',
+			text: 'Confirme la eliminación del tipo de Unidad',
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
 			confirmButtonText: 'Eliminar',
 			cancelButtonText: 'Cancelar',
-		}).then((result) => {
+		}).then((result: SweetAlertResult<void>): void => {
 			if (result.isConfirmed) {
+				deleteUnit(nameUnit)
 				clearUnitFinder()
-				deleteUnit(unitName)
 			} else {
 				clearUnitFinder()
 			}
@@ -126,7 +152,7 @@ export const FindUnit = () => {
 									<Button
 										variant="contained"
 										color="success"
-										onClick={() => navigate('/unit-edit')}
+										onClick={(): void => navigate('/unit-edit')}
 										size="small"
 									>
 										Editar
@@ -135,7 +161,7 @@ export const FindUnit = () => {
 										size="small"
 										variant="contained"
 										color="error"
-										onClick={() => showDialog(unit.name_unit)}
+										onClick={(): void => showDialog(unit.name_unit)}
 									>
 										Eliminar
 									</Button>

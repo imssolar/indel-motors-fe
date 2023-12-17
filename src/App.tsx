@@ -20,6 +20,8 @@ import { AddUnit } from './Pages/Unit/AddUnit'
 import { FindUnit } from './Pages/Unit/FindUnit'
 import { UnitState } from './context/Unit/UnitState'
 import { EditUnit } from './Pages/Unit/EditUnit'
+import { WorkOrder } from './Pages/WorkOrder/WorkOrder'
+import { WorkOrderState } from './context/workOrder/WorkOrderState'
 function App() {
 	const routes = createBrowserRouter([
 		{
@@ -80,6 +82,10 @@ function App() {
 			path: '/unit-edit',
 			element: <EditUnit />,
 		},
+		{
+			path: '/work-order',
+			element: <WorkOrder />,
+		},
 	])
 
 	return (
@@ -88,7 +94,9 @@ function App() {
 				<VehicleState>
 					<SpareGroupState>
 						<UnitState>
-							<RouterProvider router={routes} />
+							<WorkOrderState>
+								<RouterProvider router={routes} />
+							</WorkOrderState>
 						</UnitState>
 					</SpareGroupState>
 				</VehicleState>

@@ -8,11 +8,12 @@ import {
 	Container,
 } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Layout } from '../../components/Layout/Layout'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unitSchema } from '../../schemas/unitSchema'
 import { UnitContext } from '../../context/Unit/UnitContext'
+import Swal from 'sweetalert2'
 
 interface IFormInput {
 	name_unit: string
@@ -28,30 +29,35 @@ export const AddUnit = () => {
 		resolver: yupResolver(unitSchema),
 	})
 
-	const { addUnit } = useContext(UnitContext)
+	const { message, addUnit, clearUnitFinder } = useContext(UnitContext)
 
-	const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
-		console.log(formData)
+	const onSubmit: SubmitHandler<IFormInput> = async (
+		formData: IFormInput
+	): Promise<void> => {
 		addUnit(formData)
 	}
 
-	// useEffect(() => {
-	// 	if (message.text && message.type === 'error') {
-	// 		console.log('type error')
-	// 		Swal.fire({
-	// 			icon: 'error',
-	// 			title: 'Ooops!',
-	// 			text: `${message.text}`,
-	// 		})
-	// 	}
-	// 	if (message.text && message.type === 'info') {
-	// 		Swal.fire({
-	// 			icon: 'success',
-	// 			title: 'Buen trabajo!',
-	// 			text: `${message.text}`,
-	// 		})
-	// 	}
-	// }, [message.text || message.type])
+	useEffect((): void => {
+		clearUnitFinder()
+		if (message.text && message.type === 'error') {
+			Swal.fire({
+				icon: 'error',
+				title: 'Ooops!',
+				text: `${message.text}`,
+			})
+		}
+		if (message.text && message.type === 'info') {
+			Swal.fire({
+				icon: 'success',
+				title: 'Buen trabajo!',
+				text: `${message.text}`,
+			})
+		}
+	}, [message.text || message.type])
+
+	useEffect((): void => {
+		clearUnitFinder()
+	}, [])
 
 	return (
 		<Layout>
@@ -92,6 +98,7 @@ export const AddUnit = () => {
 									label="Descripción"
 									{...register('description')}
 								/>
+
 								{errors.description && <p>{errors.description.message}</p>}
 							</Grid>
 						</Grid>
