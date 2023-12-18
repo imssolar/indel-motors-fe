@@ -118,42 +118,7 @@ export const FindVehicle = () => {
 							Buscar
 						</Button>
 					</Box>
-					{vehicle && (
-						// 		<Card sx={{ minWidth: 275 }}>
-						// 			<CardContent>
-						// 				<Typography sx={{ mb: 1 }} variant="h5" component="div">
-						// 					Datos del Vehículo
-						// 				</Typography>
-						// 				<Typography>{vehicle.license_plate}</Typography>
-						// 				<Typography>{vehicle.brand}</Typography>
-						// 				<Divider />
-						// 				<Typography variant="h5" sx={{ mb: 1, mt: 1 }}>
-						// 					Contacto
-						// 				</Typography>
-						// 				{/* <Typography>{client.email}</Typography>
-						// <Typography>{client.cellphone_number}</Typography> */}
-						// 			</CardContent>
-						// 			<CardActions>
-						// 				<Button
-						// 					variant="contained"
-						// 					color="success"
-						// 					onClick={() => navigate('/client-edit')}
-						// 					size="small"
-						// 				>
-						// 					Editar
-						// 				</Button>
-						// 				<Button
-						// 					size="small"
-						// 					variant="contained"
-						// 					color="error"
-						// 					onClick={() => showDialog(client.rut)}
-						// 				>
-						// 					Eliminar
-						// 				</Button>
-						// 			</CardActions>
-						// 		</Card>
-						<CardVehicle vehicle={vehicle} />
-					)}
+					{vehicle && <CardVehicle vehicle={vehicle} />}
 				</Box>
 			</Container>
 		</Layout>

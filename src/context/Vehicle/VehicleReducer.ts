@@ -24,7 +24,7 @@ export const VehicleReducer = (state: state, action: VehicleActionType) => {
     case "CLEAR_VEHICLE":
       return {
         ...state,
-        vehicle: {},
+        vehicle: null,
         message: {},
       };
 

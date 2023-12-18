@@ -12,6 +12,9 @@ import {
 	Avatar,
 	ListItemText,
 	List,
+	Tooltip,
+	IconButton,
+	CardActions,
 } from '@mui/material'
 import Swal from 'sweetalert2'
 import { vehicleResponse } from '../../types/vehicle'
@@ -19,6 +22,7 @@ import { useContext } from 'react'
 import { VehicleContext } from '../../context/Vehicle/VehicleContext'
 import PersonIcon from '@mui/icons-material/Person'
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled'
+import DeleteIcon from '@mui/icons-material/Delete'
 interface CardVehicleProps {
 	vehicle: vehicleResponse
 }
@@ -47,9 +51,12 @@ export const CardVehicle = ({ vehicle }: CardVehicleProps) => {
 	}
 
 	console.log('cardVehicle', vehicle)
-	// const {
-	// 	client: { names, surnames },
-	// } = vehicle
+	const {
+		brand,
+		model,
+		year_production,
+		client: { names, surnames, email, rut },
+	} = vehicle
 
 	return (
 		vehicle && (
@@ -69,50 +76,61 @@ export const CardVehicle = ({ vehicle }: CardVehicleProps) => {
 					>
 						<ListItem>
 							<ListItemAvatar>
-								<Avatar>
+								<Avatar sx={{ backgroundColor: 'black' }}>
 									<PersonIcon />
 								</Avatar>
 							</ListItemAvatar>
-							<ListItemText primary="Photos" secondary="Jan 9, 2014" />
+							<ListItemText
+								primary={`${names} ${surnames}`}
+								secondary={`${rut} | ${email}`}
+							/>
 						</ListItem>
 						<Divider variant="inset" component="li" />
 						<ListItem>
 							<ListItemAvatar>
-								<Avatar>
-									<PersonIcon />
+								<Avatar sx={{ backgroundColor: 'black' }}>
+									<DirectionsCarFilledIcon />
 								</Avatar>
 							</ListItemAvatar>
-							<ListItemText primary="Work" secondary="Jan 7, 2014" />
+							<ListItemText
+								primary={`${brand} ${model}`}
+								secondary={`Año ${year_production}`}
+							/>
 						</ListItem>
 						<Divider variant="inset" component="li" />
-						<ListItem>
-							<ListItemAvatar>
-								<Avatar>
-									<PersonIcon />
-								</Avatar>
-							</ListItemAvatar>
-							<ListItemText primary="Vacation" secondary="July 20, 2014" />
-						</ListItem>
 					</List>
 				</CardContent>
-				<CardActionArea sx={{ display: 'flex', justifyContent: 'start' }}>
+				<CardActions
+					sx={{
+						display: 'flex',
+						justifyContent: 'end',
+						pb: 2,
+						pr: 2,
+					}}
+				>
 					<Button
-						variant="contained"
+						variant="outlined"
 						color="success"
 						onClick={() => navigate('/client-edit')}
 						size="small"
+						sx={{ mr: 2 }}
 					>
 						Editar
 					</Button>
+					{/* <Tooltip title="Eliminar">
+						<IconButton sx={{ color: 'red' }}>
+							<DeleteIcon />
+						</IconButton>
+					</Tooltip> */}
 					<Button
 						size="small"
-						variant="contained"
+						variant="outlined"
 						color="error"
 						onClick={() => showDialog(client.rut)}
 					>
 						Eliminar
 					</Button>
-				</CardActionArea>
+				</CardActions>
 			</Card>
 		)
 	)
