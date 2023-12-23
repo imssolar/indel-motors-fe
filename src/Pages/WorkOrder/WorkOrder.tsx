@@ -25,6 +25,7 @@ interface ISpare {
 	id: number
 	stock: number
 	name: string
+	isDisabled: boolean
 }
 
 export const WorkOrder = () => {
@@ -58,7 +59,7 @@ export const WorkOrder = () => {
 			(spare: RequestArraySpare): boolean =>
 				spare.id === 0 || spare.stock === 0 || Number.isNaN(spare.stock)
 		)
-		console.log(newWorkOrder)
+		console.log(isAnyDefaultSpare)
 
 		if (isAnyDefaultSpare) {
 			Swal.fire({
@@ -108,8 +109,10 @@ export const WorkOrder = () => {
 		setSpares(mapSpare)
 	}
 
-	useEffect((): void => {
+	useEffect(() => {
+		console.log(licenseValue)
 		if (licenseValue?.length >= 6) {
+			console.log('licenseValue?.length >= 6')
 			getClientNames(licenseValue)
 			setValue('names', clientNames ?? '')
 		} else {
@@ -260,53 +263,59 @@ export const WorkOrder = () => {
 									</Grid>
 									<Box component={'form'} noValidate sx={{ mt: 3 }}>
 										{spares.length > 0 &&
-											spares.map(
-												(spares: { id: number; stock: number }, index) => {
-													return (
-														<Box sx={{ flexGrow: 1, mb: 1 }}>
-															<Grid container spacing={2}>
-																<Grid item xs={6}>
-																	<FormControl fullWidth>
-																		<InputLabel id="demo-simple-select-label">
-																			Repuesto2
-																		</InputLabel>
+											spares.map(({ id }, index) => {
+												return (
+													<Box sx={{ flexGrow: 1, mb: 1 }}>
+														<Grid container spacing={2}>
+															<Grid item xs={6}>
+																<FormControl fullWidth>
+																	<InputLabel id="demo-simple-select-label">
+																		Repuesto
+																	</InputLabel>
 
-																		<Select
-																			labelId="demo-simple-select-label"
-																			id="demo-simple-select"
-																			label="Repuesto"
-																			placeholder="Seleccione repuesto"
-																			// {...register('ot_type')}
-																			onChange={(event) =>
-																				handleSpareID(event, index)
-																			}
-																		>
-																			{sparesFiltered?.map((spare: ISpare) => (
-																				<MenuItem
-																					key={spare.id}
-																					value={spare.id}
-																				>
-																					{spare.name}
-																				</MenuItem>
-																			))}
-																		</Select>
-																	</FormControl>
-																</Grid>
-																<Grid item xs={6}>
-																	<TextField
+																	<Select
+																		labelId="demo-simple-select-label"
+																		id={id.toString()}
+																		label="Repuesto"
+																		placeholder="Seleccione repuesto"
+																		// {...register('ot_type')}
+																		// value={id}
+																		name={id.toString()}
 																		onChange={(event) =>
-																			handleSpareID(event, index, 'stock')
+																			handleSpareID(event, index)
 																		}
-																		label={'stock'}
 																	>
-																		1
-																	</TextField>
-																</Grid>
+																		{sparesFiltered?.map((spare: ISpare) => (
+																			<MenuItem
+																				key={spare.id}
+																				value={spare.id}
+																				disabled={spare.isDisabled}
+																				style={
+																					spare.isDisabled
+																						? { display: 'none' }
+																						: { display: 'block' }
+																				}
+																			>
+																				{spare.name}
+																			</MenuItem>
+																		))}
+																	</Select>
+																</FormControl>
 															</Grid>
-														</Box>
-													)
-												}
-											)}
+															<Grid item xs={6}>
+																<TextField
+																	onChange={(event) =>
+																		handleSpareID(event, index, 'stock')
+																	}
+																	label={'stock'}
+																>
+																	1
+																</TextField>
+															</Grid>
+														</Grid>
+													</Box>
+												)
+											})}
 									</Box>
 								</Box>
 							</CardContent>

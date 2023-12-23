@@ -1,8 +1,8 @@
 import { createContext } from 'react'
 
-import { RequestArraySpare, ResponseWO } from '../../types/workorder'
+import { ResponseWO } from '../../types/workorder'
 import { orderGroupResponse } from '../../types/orderGroup'
-import { Spare } from '../../types/spare'
+import { Spare, SpareFiltered } from '../../types/spare'
 
 interface ContextProps {
 	workorder: ResponseWO | null
@@ -10,7 +10,7 @@ interface ContextProps {
 	ordersType: orderGroupResponse[] | []
 	sparesToWorkOrder: Spare[] | []
 	clientNames: string | null
-	sparesFiltered: Spare[] | []
+	sparesFiltered: SpareFiltered[] | []
 	getClientNames: (license_plate: string) => void
 	getWorkOrderType: () => Promise<void>
 	getSparesToWorkOrder: () => Promise<void>

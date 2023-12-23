@@ -17,3 +17,7 @@ export interface Spare {
   updatedAt: string;
   createdAt: string;
 }
+
+export interface SpareFiltered extends Spare{
+  isDisabled:boolean
+}

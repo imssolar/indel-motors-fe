@@ -4,7 +4,7 @@ import { RequestArraySpare, ResponseWO } from '../../types/workorder'
 import { WorkOrderReducer } from './WorkOrderReducer'
 import { WorkOrderContext } from './WorkOrderContext'
 import { orderGroupResponse } from '../../types/orderGroup'
-import { Spare } from '../../types/spare'
+import { Spare, SpareFiltered } from '../../types/spare'
 
 interface stateProps {
 	children: React.ReactNode
@@ -16,10 +16,10 @@ export interface state {
 	clientNames: string
 	ordersType: orderGroupResponse[] | []
 	sparesToWorkOrder: Spare[] | []
-	sparesFiltered: Spare[] | []
+	sparesFiltered: SpareFiltered[] | []
 }
 
-const INITITAL_STATE: state = {
+const INITIAL_STATE: state = {
 	workorder: null,
 	workorders: [],
 	clientNames: '',
@@ -29,7 +29,7 @@ const INITITAL_STATE: state = {
 }
 
 export const WorkOrderState = ({ children }: stateProps) => {
-	const [state, dispatch] = useReducer(WorkOrderReducer, INITITAL_STATE)
+	const [state, dispatch] = useReducer(WorkOrderReducer, INITIAL_STATE)
 
 	const getClientNames = async (license_plate: string): Promise<void> => {
 		try {
