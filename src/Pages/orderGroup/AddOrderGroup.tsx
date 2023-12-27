@@ -47,7 +47,6 @@ export const AddOrderGroup = () => {
                   label="Nombre"
                   {...register("name")}
                 />
-                {/* {errors.rut && <p>{errors.rut.message}</p>} */}
               </Grid>
             </Grid>
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
