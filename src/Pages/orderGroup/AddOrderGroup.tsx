@@ -1,37 +1,61 @@
-import { Box, Container, CssBaseline, Typography } from '@mui/material'
-import { Layout } from '../../components/Layout/Layout'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import {
+  Box,
+  Container,
+  CssBaseline,
+  Typography,
+  Grid,
+  TextField,
+  Button,
+} from "@mui/material";
+import { Layout } from "../../components/Layout/Layout";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface IFormInput {
-	name: string
+  name: string;
 }
 
 export const AddOrderGroup = () => {
-	const { handleSubmit } = useForm<IFormInput>()
-	const onSubmit: SubmitHandler<IFormInput> = (formData) => {
-		console.log(formData)
-	}
-	return (
-		<Layout>
-			<Container component={'main'} maxWidth="xs">
-				<CssBaseline />
-				<Box
-					sx={{
-						marginTop: 8,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}
-				>
-					<Typography>Crear Tipo de Orden de Trabajo</Typography>
-					<Box
-						component={'form'}
-						noValidate
-						sx={{ mt: 3 }}
-						onSubmit={handleSubmit(onSubmit)}
-					></Box>
-				</Box>
-			</Container>
-		</Layout>
-	)
-}
+  const { handleSubmit, register } = useForm<IFormInput>();
+  const onSubmit: SubmitHandler<IFormInput> = (formData) => {
+    console.log(formData);
+  };
+  return (
+    <Layout>
+      <Container component={"main"} maxWidth="lg">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography>Tipo de orden de trabajo</Typography>
+          <Box
+            component={"form"}
+            noValidate
+            sx={{ mt: 3 }}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={12} lg={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="name"
+                  label="Nombre"
+                  {...register("name")}
+                />
+                {/* {errors.rut && <p>{errors.rut.message}</p>} */}
+              </Grid>
+            </Grid>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Guardar
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </Layout>
+  );
+};
