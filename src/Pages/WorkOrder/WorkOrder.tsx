@@ -20,6 +20,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { RequestArraySpare, RequestWO, Spare } from '../../types/workorder'
 import { WorkOrderContext } from '../../context/workOrder/WorkOrderContext'
 import Swal from 'sweetalert2'
+import { OutSotckTable, OutStockTable } from './OutStockTable'
+import { useNavigate } from 'react-router-dom'
 
 interface ISpare {
 	id: number
@@ -42,10 +44,14 @@ export const WorkOrder = () => {
 		clientNames,
 		ordersType,
 		sparesFiltered,
+		message,
 		getClientNames,
 		getWorkOrderType,
 		getSparesToWorkOrder,
+		addNewWorkOrder,
 		filterSparesToWorkOrder,
+		cleanClientNames,
+		cleanSearchData
 	} = useContext(WorkOrderContext)
 
 	const onSubmit: SubmitHandler<RequestWO> = async (formData) => {
@@ -59,7 +65,6 @@ export const WorkOrder = () => {
 			(spare: RequestArraySpare): boolean =>
 				spare.id === 0 || spare.stock === 0 || Number.isNaN(spare.stock)
 		)
-		console.log(isAnyDefaultSpare)
 
 		if (isAnyDefaultSpare) {
 			Swal.fire({
@@ -68,6 +73,8 @@ export const WorkOrder = () => {
 				text: `Debes seleccionar repuesto y stock para crear la orden de trabajo`,
 			})
 			return
+		}else{
+			addNewWorkOrder(newWorkOrder)
 		}
 	}
 	const licenseValue = watch('license_vehicle')
@@ -79,17 +86,19 @@ export const WorkOrder = () => {
 	])
 
 	const handleTypeOrderChange = (event: SelectChangeEvent): void => {
-		console.log(event.target.value)
+
 		setType(event.target.value as string)
 	}
+
+	const navigate = useNavigate();
+
 
 	const handleSpareID = (
 		event: SelectChangeEvent,
 		index: number,
 		label: string = 'id'
 	) => {
-		console.log('handleSpareId', event.target.value)
-		console.log('handleSpareId label: ', label)
+
 		const mapSpare = spares.map(
 			(spare: RequestArraySpare, indexSpare: number) => {
 				if (indexSpare === index) {
@@ -102,23 +111,24 @@ export const WorkOrder = () => {
 				return spare
 			}
 		)
-		console.log('mapSpare:', mapSpare)
+
 		const arrayIDs = mapSpare.map((spare) => spare.id)
-		console.log(arrayIDs)
+
 		filterSparesToWorkOrder(arrayIDs)
 		setSpares(mapSpare)
 	}
 
 	useEffect(() => {
-		console.log(licenseValue)
+
 		if (licenseValue?.length >= 6) {
-			console.log('licenseValue?.length >= 6')
+
 			getClientNames(licenseValue)
 			setValue('names', clientNames ?? '')
 		} else {
+			cleanClientNames()
 			setValue('names', '')
 		}
-	}, [licenseValue])
+	}, [licenseValue, clientNames])
 
 	useEffect((): void => {
 		getWorkOrderType()
@@ -129,6 +139,34 @@ export const WorkOrder = () => {
 		const newSpare = [{ id: 1, stock: 0 }]
 		setSpares([...spares, ...newSpare])
 	}
+
+	useEffect(()=>{
+		cleanSearchData()
+	},[])
+	useEffect((): void => {
+		if (message.text && message.type === 'outStock') {
+			console.log('type error')
+			Swal.fire({
+				icon: 'error',
+				title: 'Ooops!',
+				text: `${message.text}`,
+				confirmButtonColor:'#d33',
+				confirmButtonText: "Ver productos sin stock"
+			}).then((result)=>{
+				if(result.isConfirmed){
+					navigate('/workorder-stock')
+				}
+			})
+			
+		}
+		if (message.text && message.type === 'info') {
+			Swal.fire({
+				icon: 'success',
+				title: 'Buen trabajo!',
+				text: `${message.text}`,
+			})
+		}
+	}, [message.text || message.type])
 
 	return (
 		<Layout>
@@ -322,6 +360,32 @@ export const WorkOrder = () => {
 						</Card>
 					</Container>
 				</Box>
+				{/* {sparesOutStock.length > 0 && 
+					<Box>
+					<Container component={'main'} maxWidth="lg">
+						<CssBaseline />
+						<Card>
+							<CardContent>
+								<Box
+									sx={{
+										marginTop: 1,
+										display: 'flex',
+										flexDirection: 'column',
+										alignItems: 'center',
+									}}
+								>
+									<Typography component={'h1'} variant="h5">
+										Repuestos sin stock
+									</Typography>
+
+									<OutStockTable sparesOutStock={sparesOutStock}/>
+								</Box>
+							</CardContent>
+						</Card>
+					</Container>
+				</Box>
+				
+				} */}
 			</Container>
 		</Layout>
 	)

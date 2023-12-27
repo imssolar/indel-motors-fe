@@ -24,6 +24,7 @@ import {
 	unitPages,
 	vehiclePages,
 	workOrderPages,
+	orderGroup
 } from '../../utils/Pages/pagesUtils'
 import { Link } from 'react-router-dom'
 
@@ -218,6 +219,19 @@ export default function Menu({ children }: Props) {
 					))}
 				</List>
 				<Divider />
+				<List>
+				<Typography align="center" sx={{ mt: 1 }}>
+						Tipo(s) de orden
+					</Typography>
+					{orderGroup.map((item, index) => (
+						<ListItem key={index} disablePadding>
+							<ListItemButton component={Link} to={item.path}>
+								<ListItemIcon>{item.icon}</ListItemIcon>
+								<ListItemText primary={item.name} />
+							</ListItemButton>
+						</ListItem>
+					))}
+				</List>
 			</Drawer>
 			<Main open={open}>
 				<DrawerHeader />

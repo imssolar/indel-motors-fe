@@ -22,6 +22,9 @@ import { UnitState } from './context/Unit/UnitState'
 import { EditUnit } from './Pages/Unit/EditUnit'
 import { WorkOrder } from './Pages/WorkOrder/WorkOrder'
 import { WorkOrderState } from './context/workOrder/WorkOrderState'
+import { OutStockTable } from './Pages/WorkOrder/OutStockTable'
+import { AddOrderGroup } from './Pages/orderGroup/AddOrderGroup'
+import { FindOrderGroup } from './Pages/orderGroup/FindOrderGroup'
 function App() {
 	const routes = createBrowserRouter([
 		{
@@ -86,6 +89,18 @@ function App() {
 			path: '/work-order',
 			element: <WorkOrder />,
 		},
+		{
+			path:'/workorder-stock',
+			element:<OutStockTable/>
+		},
+		{
+			path:'/ordergroup-list',
+			element:<FindOrderGroup/>
+		},
+		{
+			path:'/order-group',
+			element:<AddOrderGroup/>
+		}
 	])
 
 	return (
