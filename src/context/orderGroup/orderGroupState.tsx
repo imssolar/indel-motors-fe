@@ -1,16 +1,17 @@
 import { useReducer } from 'react'
-import { newOrderGroup, orderGroupRequest } from '../../types/orderGroup'
+import {  orderGroupRequest } from '../../types/orderGroup'
 import { Message } from '../../types/message'
-import { orderGroupReducer } from './orderGroupReducer'
-import { orderGroupContext } from './orderGroupContext'
+
 import api from '../../api'
+import { OrderGroupReducer } from './OrderGroupReducer'
+import { OrderGroupContext } from './OrderGroupContext'
 
 interface stateProps {
 	children: React.ReactNode
 }
 
 export interface state {
-	orderGroup: newOrderGroup | null
+	orderGroup: orderGroupRequest | null
 	message: Message
 }
 
@@ -18,8 +19,8 @@ const INITIAL_STATE: state = {
 	orderGroup: null,
 	message: {},
 }
-export const orderGroupState = ({ children }: stateProps) => {
-	const [state, dispatch] = useReducer(orderGroupReducer, INITIAL_STATE)
+export const OrderGroupState = ({ children }: stateProps) => {
+	const [state, dispatch] = useReducer(OrderGroupReducer, INITIAL_STATE)
 
 	const getOrderGroups = async (): Promise<void> => {
 		try {
@@ -42,13 +43,23 @@ export const orderGroupState = ({ children }: stateProps) => {
 			console.log(error)
 		}
 	}
-	const addOrderGroup = async (): Promise<void> => {}
+	const addOrderGroup = async (orderGroup: orderGroupRequest): Promise<void> => {
+		try {
+			await api.post('/ordergroup',orderGroup)
+			dispatch({
+				type:'ADD_ORDERGROUP'
+			})
+		} catch (error) {
+			console.log(error)
+		}
+	}
 	const editOrderGroup = async (): Promise<void> => {}
 	const updateOrderGroup = async (): Promise<void> => {}
 	const deleteOrderGroup = async (): Promise<void> => {}
+	const clearOrderGroupFinder =()=>{}
 
 	return (
-		<orderGroupContext.Provider
+		<OrderGroupContext.Provider
 			value={{
 				...state,
 				getOrderGroups,
@@ -59,6 +70,8 @@ export const orderGroupState = ({ children }: stateProps) => {
 				deleteOrderGroup,
 				clearOrderGroupFinder,
 			}}
-		></orderGroupContext.Provider>
+		>
+			{children}
+		</OrderGroupContext.Provider>
 	)
 }

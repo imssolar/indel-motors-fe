@@ -14,4 +14,4 @@ interface ContextProps {
 	clearOrderGroupFinder: () => void
 }
 
-export const orderGroupContext = createContext({} as ContextProps)
+export const OrderGroupContext = createContext({} as ContextProps)
