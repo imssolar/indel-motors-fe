@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import { Layout } from "../../components/Layout/Layout";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useContext } from "react";
+import { OrderGroupContext } from "../../context/orderGroup/OrderGroupContext";
 
 interface IFormInput {
   name: string;
@@ -16,9 +18,14 @@ interface IFormInput {
 
 export const AddOrderGroup = () => {
   const { handleSubmit, register } = useForm<IFormInput>();
+
+  const { addOrderGroup } = useContext(OrderGroupContext);
+
   const onSubmit: SubmitHandler<IFormInput> = (formData) => {
-    console.log(formData);
+	console.log(formData)
+    addOrderGroup(formData);
   };
+
   return (
     <Layout>
       <Container component={"main"} maxWidth="lg">
