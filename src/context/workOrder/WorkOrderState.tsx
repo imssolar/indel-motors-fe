@@ -2,6 +2,8 @@ import { useReducer } from "react";
 import api from "../../api";
 import {
   RequestWO,
+  ResponseGetClientByPPU,
+  ResponseOTByPPU,
   ResponseWO,
   SparesWithoutStock,
 } from "../../types/workorder";
@@ -10,52 +12,70 @@ import { WorkOrderContext } from "./WorkOrderContext";
 import { orderGroupResponse } from "../../types/orderGroup";
 import { Spare, SpareFiltered } from "../../types/spare";
 import { Message } from "../../types/message";
+import { Client } from "../../types/client";
+import { Try } from "@mui/icons-material";
 
 interface stateProps {
   children: React.ReactNode;
 }
 
 export interface state {
-  workorder: ResponseWO | null
-  workorders: ResponseWO[] | []
-  message: Message
-  clientNames: string | null
-  ordersType: orderGroupResponse[] | []
-  sparesToWorkOrder: Spare[] | []
-  sparesFiltered: SpareFiltered[] | []
-  sparesOutStock: SparesWithoutStock[] | []
+  workorder: ResponseWO | null;
+  workorders: ResponseWO[] | [];
+  message: Message;
+  vehicle: ResponseGetClientByPPU | null;
+  client: Client | null;
+  ordersType: orderGroupResponse[] | [];
+  sparesToWorkOrder: Spare[] | [];
+  sparesFiltered: SpareFiltered[] | [];
+  sparesOutStock: SparesWithoutStock[] | [];
+  otByPPU :ResponseOTByPPU | []
 }
 
 const INITIAL_STATE: state = {
   workorder: null,
   workorders: [],
   message: {},
-  clientNames: null,
+  vehicle: null,
+  client: null,
   ordersType: [],
   sparesToWorkOrder: [],
   sparesFiltered: [],
   sparesOutStock: [],
+  otByPPU:[]
 };
 
 export const WorkOrderState = ({ children }: stateProps) => {
-  const [state, dispatch] = useReducer(WorkOrderReducer,INITIAL_STATE)
+  const [state, dispatch] = useReducer(WorkOrderReducer, INITIAL_STATE);
 
-  const getClientNames = async (license_plate: string): Promise<void> => {
+  const getClientByPPU = async (license_plate: string): Promise<void> => {
     try {
-      const {
-        data: {
-          vehicle: { client },
-        },
-      } = await api.get(`/vehicle/${license_plate}`);
-      const { names, surnames } = client;
+      const { data } = await api.get(`/vehicle/${license_plate}`);
       dispatch({
-        type: "GET_CLIENTNAMES",
-        payload: `${names} ${surnames}`,
+        type: "GET_CLIENTBYPPU",
+        payload: data.vehicle.client,
+      });
+      dispatch({
+        type: "GET_VEHICLEBYPPU",
+        payload: data.vehicle,
       });
     } catch (error) {
       console.log(error);
     }
   };
+
+  const getWorkOrderByPPU=async(ppu:string)=>{
+    try {
+      const {data} = await api.get(`/workorder/${ppu}`)
+      console.log("getwoppu",data)
+      dispatch({
+        type:'GET_WORKORDERBYPPU',
+        payload:data
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const getWorkOrderType = async (): Promise<void> => {
     try {
@@ -136,25 +156,26 @@ export const WorkOrderState = ({ children }: stateProps) => {
     });
   };
 
-  const cleanMessage =()=>{
+  const cleanMessage = () => {
     dispatch({
-      type:"CLEAN_MESSAGE"
-    })
-  }
+      type: "CLEAN_MESSAGE",
+    });
+  };
 
   return (
     <WorkOrderContext.Provider
       value={{
         ...state,
-        getClientNames,
+        getClientByPPU,
         getWorkOrderType,
         addNewWorkOrder,
         getSparesToWorkOrder,
         filterSparesToWorkOrder,
+        getWorkOrderByPPU,
         cleanClientNames,
         messageToShow,
         cleanSearchData,
-        cleanMessage
+        cleanMessage,
       }}
     >
       {children}

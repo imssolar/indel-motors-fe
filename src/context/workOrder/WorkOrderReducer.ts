@@ -1,11 +1,19 @@
+import { Client } from "../../types/client";
 import { Message } from "../../types/message";
 import { orderGroupResponse } from "../../types/orderGroup";
 import { Spare } from "../../types/spare";
-import { SparesWithoutStock } from "../../types/workorder";
+import { Vehicle } from "../../types/vehicle";
+import {
+  ResponseGetClientByPPU,
+  ResponseOTByPPU,
+  SparesWithoutStock,
+} from "../../types/workorder";
 import { state } from "./WorkOrderState";
 
 type WorOrderReducerTypes =
-  | { type: "GET_CLIENTNAMES"; payload: string }
+  | { type: "GET_CLIENTBYPPU"; payload: Client }
+  | { type: "GET_VEHICLEBYPPU"; payload: Vehicle }
+  | { type: "GET_WORKORDERBYPPU"; payload: ResponseOTByPPU[] }
   | { type: "GET_ORDERSTYPE"; payload: orderGroupResponse[] }
   | { type: "GET_SPARESTOWORK"; payload: Spare[] }
   | { type: "FILTER_SPARESTOWORK"; payload: number[] }
@@ -21,10 +29,16 @@ export const WorkOrderReducer = (
   action: WorOrderReducerTypes
 ) => {
   switch (action.type) {
-    case "GET_CLIENTNAMES":
+    case "GET_CLIENTBYPPU":
       return {
         ...state,
-        clientNames: action.payload,
+        client: action.payload,
+      };
+
+    case "GET_VEHICLEBYPPU":
+      return {
+        ...state,
+        vehicle: action.payload,
       };
 
     case "GET_ORDERSTYPE":
@@ -39,6 +53,12 @@ export const WorkOrderReducer = (
         sparesToWorkOrder: action.payload,
         sparesFiltered: action.payload,
       };
+
+    case "GET_WORKORDERBYPPU":
+      return{
+        ...state,
+        otByPPU:action.payload
+      }
 
     case "ADD_WORKORDER":
       return {
