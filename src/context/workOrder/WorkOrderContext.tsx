@@ -2,12 +2,15 @@ import { createContext } from "react";
 
 import {
   RequestWO,
+  ResponseGetClientByPPU,
+  ResponseOTByPPU,
   ResponseWO,
   SparesWithoutStock,
 } from "../../types/workorder";
 import { orderGroupResponse } from "../../types/orderGroup";
 import { Spare, SpareFiltered } from "../../types/spare";
 import { Message } from "../../types/message";
+import { Client } from "../../types/client";
 
 interface ContextProps {
   workorder: ResponseWO | null;
@@ -15,10 +18,13 @@ interface ContextProps {
   message: Message;
   ordersType: orderGroupResponse[] | [];
   sparesToWorkOrder: Spare[] | [];
-  clientNames: string | null;
+  vehicle: ResponseGetClientByPPU | null;
+  client: Client | null;
   sparesFiltered: SpareFiltered[] | [];
   sparesOutStock: SparesWithoutStock[] | [];
-  getClientNames: (license_plate: string) => void;
+  otByPPU: ResponseOTByPPU | []
+  getClientByPPU: (license_plate: string) => void;
+  getWorkOrderByPPU: (ppu: string) => void;
   getWorkOrderType: () => Promise<void>;
   getSparesToWorkOrder: () => Promise<void>;
   addNewWorkOrder: (newWorkOrder: RequestWO) => Promise<void>;
@@ -27,7 +33,7 @@ interface ContextProps {
   cleanClientNames: () => void;
   messageToShow: (message: Message) => void;
   cleanSearchData: () => void;
-  cleanMessage:()=>void
+  cleanMessage: () => void;
 }
 
 export const WorkOrderContext = createContext({} as ContextProps);

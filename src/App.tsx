@@ -26,6 +26,8 @@ import { OutStockTable } from "./Pages/WorkOrder/OutStockTable";
 import { AddOrderGroup } from "./Pages/orderGroup/AddOrderGroup";
 import { FindOrderGroup } from "./Pages/orderGroup/FindOrderGroup";
 import "./App.css";
+import { WO } from "./Pages/WorkOrder/WO";
+import { SpareState } from "./context/Spare/spareState";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -88,7 +90,7 @@ function App() {
     },
     {
       path: "/work-order",
-      element: <WorkOrder />,
+      element: <WO />,
     },
     {
       path: "/workorder-stock",
@@ -112,7 +114,9 @@ function App() {
             <UnitState>
               <WorkOrderState>
                 <OrderGroupState>
-                  <RouterProvider router={routes} />
+                  <SpareState>
+                    <RouterProvider router={routes} />
+                  </SpareState>
                 </OrderGroupState>
               </WorkOrderState>
             </UnitState>
