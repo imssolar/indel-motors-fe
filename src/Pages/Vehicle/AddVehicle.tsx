@@ -1,167 +1,239 @@
+import { useForm } from "react-hook-form";
+import { Layout } from "../../components/Layout/Layout";
 import {
-	Box,
-	CssBaseline,
-	Grid,
-	TextField,
-	Typography,
-	Button,
-	Container,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
-	SelectChangeEvent,
-} from '@mui/material'
-import { Layout } from '../../components/Layout/Layout'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { useContext, useEffect, useState } from 'react'
-import { VehicleContext } from '../../context/Vehicle/VehicleContext'
-import { schema } from '../../schemas/vehicleSchema'
-import { yupResolver } from '@hookform/resolvers/yup'
+  Box,
+  CssBaseline,
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  SelectChangeEvent,
+  Card,
+  CardContent,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Select,
+  Stack,
+  Autocomplete,
+} from "@mui/material";
+import { RequestWO, ResponseOTByPPU } from "../../types/workorder";
+import { useContext, useEffect } from "react";
+import { WorkOrderContext } from "../../context/workOrder/WorkOrderContext";
+import { SpareContext } from "../../context/Spare/SpareContext";
+const headers = [
+  "PPU",
+  "N° OT/COTIZACIÓN",
+  "FECHA(DD/MM/AA)",
+  "OBS. DE REPARACIÓN",
+  "TIPO OT",
+];
 
-interface IVehicleInput {
-	license_plate: string
-	brand: string
-	model: string
-	year_production: number
-	vin_number: string
-	rut_client: string
-}
+const rows = [
+  {
+    ppu: "CV-12-23",
+    ot: "12345",
+    fecha: "22-03-23",
+    obs: "Cambio de polea",
+    tipo: "Preventiva",
+  },
+];
 
 export const AddVehicle = () => {
-	const [brandSelect, setBrand] = useState('')
-	const {
-		handleSubmit,
-		register,
-		formState: { errors, isValid },
-		watch,
-		setValue,
-		trigger,
-	} = useForm<IVehicleInput>({ resolver: yupResolver(schema) })
-	const { brands, addVehicle, getBrands } = useContext(VehicleContext)
+  const {
+    handleSubmit,
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<RequestWO>();
 
-	const handleChange = (event: SelectChangeEvent) => {
-		setValue('brand', event.target.value)
-		console.log(event.target.value)
-		setBrand(event.target.value as string)
-	}
+  const { vehicle, client, otByPPU, getClientByPPU, getWorkOrderByPPU } =
+    useContext(WorkOrderContext);
 
-	const onSubmit: SubmitHandler<IVehicleInput> = async (formData) => {
-		await trigger()
-		console.log('hola')
-		console.log(formData)
-		// console.log(formData.brand)
-		addVehicle(formData)
-	}
+  const { spare, allSpares, getSpare, getSpares } = useContext(SpareContext);
+  const licenceForm = watch("license_vehicle") ?? "";
+  const brandForm = watch("brand") ?? "";
+  const modelForm = watch("model") ?? "";
+  const rutForm = watch("rut") ?? "";
+  const namesForm = watch("names") ?? "";
+  const surnamesForm = watch("surnames") ?? "";
 
-	useEffect(() => {
-		getBrands()
-	}, [])
+  const handleChangeSpares = (spareSelectd: string) => {
+    getSpare(spareSelectd);
+  };
 
-	return (
-		<Layout>
-			<Container component={'main'} maxWidth="xs">
-				<CssBaseline />
-				<Box
-					sx={{
-						marginTop: 8,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}
-				>
-					<Typography component={'h1'} variant="h5">
-						Crear Vehículo
-					</Typography>
-					<Box
-						component={'form'}
-						noValidate
-						sx={{ mt: 3 }}
-						onSubmit={handleSubmit(onSubmit)}
-					>
-						<Grid container spacing={3}>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="license_plate"
-									label="Patente"
-									{...register('license_plate')}
-								/>
-								{errors.license_plate && <p>{errors.license_plate.message}</p>}
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="rut"
-									label="Rut asociado"
-									{...register('rut_client')}
-								/>
-								{errors.rut_client && <p>{errors.rut_client.message}</p>}
-							</Grid>
-							<Grid item xs={6}>
-								<FormControl fullWidth>
-									<InputLabel id="demo-simple-select-label">Marca</InputLabel>
-									<Select
-										labelId="demo-simple-select-label"
-										id="demo-simple-select"
-										value={brandSelect}
-										label="Marca"
-										{...register('brand')}
-										onChange={handleChange}
-									>
-										{brands.map((brands) => (
-											<MenuItem key={brands.id} value={brands.name}>
-												{brands.name}
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl>
-							</Grid>
-							{errors.brand && <p>{errors.brand.message}</p>}
+  useEffect(() => {
+    if (licenceForm.length >= 6) {
+      getClientByPPU(licenceForm);
+      getWorkOrderByPPU(licenceForm);
+    }
+  }, [licenceForm]);
 
-							<Grid item xs={6}>
-								<TextField
-									required
-									fullWidth
-									id="model"
-									label="Modelo"
-									{...register('model')}
-								/>
-							</Grid>
-							{errors.model && <p>{errors.model.message}</p>}
+  useEffect(() => {
+    setValue("brand", vehicle?.brand ?? "");
+    setValue("model", vehicle?.model ?? "");
+    setValue("names", client?.names ?? "");
+    setValue("surnames", client?.surnames ?? "");
+    setValue("rut", client?.rut ?? "");
+  }, [vehicle]);
 
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="year_production"
-									label="Año de Fabricación"
-									{...register('year_production')}
-								/>
-							</Grid>
-							{errors.year_production && (
-								<p>{errors.year_production.message}</p>
-							)}
+  useEffect(() => {
+    getSpares();
+  }, []);
 
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="vin_number"
-									label="Número de Chasis"
-									{...register('vin_number')}
-								/>
-							</Grid>
-							{errors.vin_number && <p>{errors.vin_number.message}</p>}
-						</Grid>
-						<Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-							Guardar
-						</Button>
-					</Box>
-				</Box>
-			</Container>
-		</Layout>
-	)
-}
+  const top100Films = [
+    { title: "The Shawshank Redemption", cod_id: 2 },
+    { title: "The Godfather", cod_id: 3 },
+    { title: "The Godfather: Part II", cod_id: 4 },
+  ];
+
+  return (
+    <Layout>
+      <Container
+        component={"main"}
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          justifyContent: "",
+        }}
+      >
+        <CssBaseline />
+        <Card>
+          <CardContent sx={{ m: 4 }}>
+            <Typography
+              component={"h1"}
+              variant="h5"
+              sx={{ display: "flex", justifyContent: "center", mb: 5 }}
+            >
+              INGRESO DE VEHICULOS
+            </Typography>
+            <Box component={"form"} noValidate>
+              <Typography sx={{ mb: 2, fontWeight: "bold" }}>
+                DATOS DEL VEHÍCULO
+              </Typography>
+              <Grid container spacing={3} columnSpacing={3}>
+                <Grid item xs={3}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="license_vehicle"
+                    label="Patente"
+                    {...register("license_vehicle")}
+                  />
+                  {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )}
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="brand"
+                    label={brandForm?.length > 0 ? "" : "Marca"}
+                    inputProps={{ readOnly: true }}
+                    sx={{ opacity: "0.5" }}
+                    {...register("brand")}
+                  />
+                  {/* {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )} */}
+                </Grid>
+				<Grid item xs={3}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="brand"
+                    label={brandForm?.length > 0 ? "" : "Año Fabricación"}
+                    inputProps={{ readOnly: true }}
+                    sx={{ opacity: "0.5" }}
+                    {...register("brand")}
+                  />
+                  {/* {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )} */}
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="model"
+                    inputProps={{ readOnly: true }}
+                    sx={{ opacity: "0.5" }}
+                    label={modelForm?.length > 0 ? "" : "Modelo"}
+                    {...register("model")}
+                  />
+                  {/* {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )} */}
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="model"
+                    inputProps={{ readOnly: true }}
+                    sx={{ opacity: "0.5" }}
+                    label={modelForm?.length > 0 ? "" : "N° de Chasis"}
+                    {...register("model")}
+                  />
+                  {/* {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )} */}
+                </Grid>
+                
+              </Grid>
+              <Typography sx={{ mb: 2, mt: 2, fontWeight: "bold" }}>
+                DATOS DEL CLIENTE
+              </Typography>
+              <Grid container spacing={3}>
+               
+                
+                <Grid item xs={4}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="rut"
+                    label={rutForm.length > 0 ? "" : "RUT ASOCIADO"}
+                    {...register("rut")}
+                  />
+                  {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )}
+                </Grid>
+              </Grid>
+            </Box>
+            
+           
+           
+            <Stack sx={{mt:5}} direction="row" spacing={2}>
+               <Button variant="contained">
+			     
+				 GUARDAR
+			   </Button>
+			   <Button variant="contained">
+			     
+				 Buscar
+			   </Button>
+			   <Button variant="contained">
+			     
+				 MODIFICAR
+			   </Button>
+			   <Button variant="contained">
+			     
+				 ELIMINAR
+			   </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Container>
+    </Layout>
+  );
+};

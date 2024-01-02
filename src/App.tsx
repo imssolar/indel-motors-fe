@@ -28,6 +28,7 @@ import { FindOrderGroup } from "./Pages/orderGroup/FindOrderGroup";
 import "./App.css";
 import { WO } from "./Pages/WorkOrder/WO";
 import { SpareState } from "./context/Spare/spareState";
+import { AddSpare } from "./Pages/Spare/AddSpare";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -104,6 +105,10 @@ function App() {
       path: "/order-group",
       element: <AddOrderGroup />,
     },
+    {
+      path: "/spare",
+      element: <AddSpare />,
+    }
   ]);
 
   return (
