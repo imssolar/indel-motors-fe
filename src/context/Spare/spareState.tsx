@@ -3,6 +3,7 @@ import { Spare } from "../../types/spare";
 import { SpareReducer } from "./spareReducer";
 import { SpareContext } from "./SpareContext";
 import api from "../../api";
+import { RequestArraySpare } from "../../types/workorder";
 interface spareProps {
   children: React.ReactNode;
 }
@@ -10,11 +11,23 @@ interface spareProps {
 export interface ISpareState {
   spare: Spare | null;
   allSpares: Spare[] | [];
+  requestSpares: RequestArraySpare[] | [];
 }
 
 export const INITIAL_STATE: ISpareState = {
   spare: null,
   allSpares: [],
+  requestSpares: [
+    {
+      id: 0,
+      stock: 0,
+      quantity: 0,
+      name: "",
+      code: "",
+      total: 0,
+      value: 0,
+    },
+  ],
 };
 
 export const SpareState = ({ children }: spareProps) => {
@@ -42,12 +55,46 @@ export const SpareState = ({ children }: spareProps) => {
     }
   };
 
+  const setRequestSpares = (code: string, id: number) => {
+    const spareSelected = state.allSpares.find((item) => item.code_id === code);
+    dispatch({
+      type: "SET_REQUESTSPARE",
+      payload: { id, spareSelected },
+    });
+  };
+
+  const AddnewArrayOfSpare = (spareToAdd: RequestArraySpare) => {
+    console.log(spareToAdd);
+    dispatch({
+      type: "ADD_NEWSPARE",
+      payload: spareToAdd,
+    });
+  };
+
+  const deleteSpare = (index: number) => {
+    dispatch({
+      type: "DELETE_REQUESTSPARE",
+      payload: index,
+    });
+  };
+
+  const handleQuantity = (requestQuantity: string, index: number) => {
+    dispatch({
+      type: "SET_QUANTITY",
+      payload: { requestQuantity: Number(requestQuantity), index },
+    });
+  };
+
   return (
     <SpareContext.Provider
       value={{
         ...state,
         getSpare,
-        getSpares
+        getSpares,
+        setRequestSpares,
+        AddnewArrayOfSpare,
+        deleteSpare,
+        handleQuantity,
       }}
     >
       {children}

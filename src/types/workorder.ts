@@ -16,6 +16,11 @@ export interface RequestWO {
 export interface RequestArraySpare {
   id: number;
   stock: number;
+  quantity: number;
+  name: string;
+  total: number;
+  code: string;
+  value: number;
 }
 
 export interface SparesWithoutStock {
@@ -69,12 +74,12 @@ export interface ResponseGetClientByPPU {
   client: Client;
 }
 
-export interface ResponseOTByPPU{
-  ot_number:number,
-  date:string,
-  observations:string,
-  createdAt:string,
-  updatedAt:string
-  license_vehicle:string
-  ot_type:number
+export interface ResponseOTByPPU {
+  ot_number: number;
+  date: string;
+  observations: string;
+  createdAt: string;
+  updatedAt: string;
+  license_vehicle: string;
+  ot_type: number;
 }

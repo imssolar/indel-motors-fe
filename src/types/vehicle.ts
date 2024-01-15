@@ -5,7 +5,7 @@ export interface Vehicle {
   brand: string;
   model: string;
   year_production: number;
-  vin_number: number;
+  vin_number: string;
   rut_client: string;
 }
 

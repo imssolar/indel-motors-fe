@@ -1,77 +1,82 @@
-import { useReducer } from 'react'
-import {  orderGroupRequest } from '../../types/orderGroup'
-import { Message } from '../../types/message'
+import { useReducer } from "react";
+import { orderGroupRequest, orderGroupResponse } from "../../types/orderGroup";
+import { Message } from "../../types/message";
 
-import api from '../../api'
-import { OrderGroupReducer } from './OrderGroupReducer'
-import { OrderGroupContext } from './OrderGroupContext'
+import api from "../../api";
+import { OrderGroupReducer } from "./OrderGroupReducer";
+import { OrderGroupContext } from "./OrderGroupContext";
 
 interface stateProps {
-	children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export interface state {
-	orderGroup: orderGroupRequest | null
-	message: Message
+  orderGroup: orderGroupResponse[] | [];
+  message: Message;
 }
 
 const INITIAL_STATE: state = {
-	orderGroup: null,
-	message: {},
-}
+  orderGroup: [],
+  message: {},
+};
 export const OrderGroupState = ({ children }: stateProps) => {
-	const [state, dispatch] = useReducer(OrderGroupReducer, INITIAL_STATE)
+  const [state, dispatch] = useReducer(OrderGroupReducer, INITIAL_STATE);
 
-	const getOrderGroups = async (): Promise<void> => {
-		try {
-			const { data } = await api.get('/ordergroup')
-			console.log(data)
-		} catch (error) {
-			console.log(error)
-		}
-	}
-	const getOrderGroup = async (
-		orderGroup: orderGroupRequest
-	): Promise<void> => {
-		try {
-			const { data } = await api.post(`/ordergroup/${orderGroup}`)
-			dispatch({
-				type: 'GET_ORDERGROUP',
-				payload: data,
-			})
-		} catch (error) {
-			console.log(error)
-		}
-	}
-	const addOrderGroup = async (orderGroup: orderGroupRequest): Promise<void> => {
-		try {
-			await api.post('/ordergroup',orderGroup)
-			dispatch({
-				type:'ADD_ORDERGROUP'
-			})
-		} catch (error) {
-			console.log(error)
-		}
-	}
-	const editOrderGroup = async (): Promise<void> => {}
-	const updateOrderGroup = async (): Promise<void> => {}
-	const deleteOrderGroup = async (): Promise<void> => {}
-	const clearOrderGroupFinder =()=>{}
+  const getOrderGroups = async (): Promise<void> => {
+    try {
+      const { data } = await api.get("/ordergroup");
+      dispatch({
+        type: "GET_ORDERGROUPS",
+        payload: data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getOrderGroup = async (
+    orderGroup: orderGroupRequest
+  ): Promise<void> => {
+    try {
+      const { data } = await api.post(`/ordergroup/${orderGroup}`);
+      dispatch({
+        type: "GET_ORDERGROUP",
+        payload: data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const addOrderGroup = async (
+    orderGroup: orderGroupRequest
+  ): Promise<void> => {
+    try {
+      await api.post("/ordergroup", orderGroup);
+      dispatch({
+        type: "ADD_ORDERGROUP",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const editOrderGroup = async (): Promise<void> => {};
+  const updateOrderGroup = async (): Promise<void> => {};
+  const deleteOrderGroup = async (): Promise<void> => {};
+  const clearOrderGroupFinder = () => {};
 
-	return (
-		<OrderGroupContext.Provider
-			value={{
-				...state,
-				getOrderGroups,
-				getOrderGroup,
-				addOrderGroup,
-				editOrderGroup,
-				updateOrderGroup,
-				deleteOrderGroup,
-				clearOrderGroupFinder,
-			}}
-		>
-			{children}
-		</OrderGroupContext.Provider>
-	)
-}
+  return (
+    <OrderGroupContext.Provider
+      value={{
+        ...state,
+        getOrderGroups,
+        getOrderGroup,
+        addOrderGroup,
+        editOrderGroup,
+        updateOrderGroup,
+        deleteOrderGroup,
+        clearOrderGroupFinder,
+      }}
+    >
+      {children}
+    </OrderGroupContext.Provider>
+  );
+};

@@ -6,14 +6,15 @@ import { Brand } from "../../types/brand";
 interface ContextProps {
   vehicle: vehicleResponse | null;
   message: Message;
-  brands:Brand[] 
+  brands: Brand[];
   addVehicle: (vehicleToCreate: Vehicle) => Promise<void>;
   getVehicle: (license: string) => Promise<void>;
   getVehicles: () => Promise<void>;
-  updateVehicle: (license: string) => Promise<void>;
+  updateVehicle: (vehicleToUpdate: Vehicle) => Promise<void>;
   deleteVehicle: (license: string) => Promise<void>;
   clearVehicleFinder: () => void;
   getBrands: () => Promise<void>;
+  messageToShow: (message: Message) => void;
 }
 
 export const VehicleContext = createContext({} as ContextProps);

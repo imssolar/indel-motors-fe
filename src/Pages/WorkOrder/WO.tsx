@@ -24,26 +24,22 @@ import {
   Stack,
   Autocomplete,
 } from "@mui/material";
-import { RequestWO, ResponseOTByPPU } from "../../types/workorder";
-import { useContext, useEffect } from "react";
+import {
+  RequestArraySpare,
+  RequestWO,
+  ResponseOTByPPU,
+} from "../../types/workorder";
+import { useContext, useEffect, useState } from "react";
 import { WorkOrderContext } from "../../context/workOrder/WorkOrderContext";
-import { SpareContext } from "../../context/Spare/SpareContext";
+import { SpareContext } from "../../context/Spare/spareContext";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { OrderGroupContext } from "../../context/orderGroup/OrderGroupContext";
 const headers = [
   "PPU",
   "N° OT/COTIZACIÓN",
   "FECHA(DD/MM/AA)",
   "OBS. DE REPARACIÓN",
   "TIPO OT",
-];
-
-const rows = [
-  {
-    ppu: "CV-12-23",
-    ot: "12345",
-    fecha: "22-03-23",
-    obs: "Cambio de polea",
-    tipo: "Preventiva",
-  },
 ];
 
 export const WO = () => {
@@ -58,7 +54,23 @@ export const WO = () => {
   const { vehicle, client, otByPPU, getClientByPPU, getWorkOrderByPPU } =
     useContext(WorkOrderContext);
 
-  const { spare, allSpares, getSpare, getSpares } = useContext(SpareContext);
+  const [modifyWO, setModifyWO] = useState<boolean>(false);
+
+  const {
+    spare,
+    allSpares,
+    requestSpares,
+    setRequestSpares,
+    handleQuantity,
+    AddnewArrayOfSpare,
+    getSpares,
+    deleteSpare,
+  } = useContext(SpareContext);
+
+  const { orderGroup, getOrderGroups } = useContext(OrderGroupContext);
+  // const [requestSpares, setRequestSpares] = useState<RequestArraySpare[]>([
+  //   { id: 0, stock: 0, quantity: 0, name: "", code: "", total: 0, value: 0 },
+  // ]);
   const licenceForm = watch("license_vehicle") ?? "";
   const brandForm = watch("brand") ?? "";
   const modelForm = watch("model") ?? "";
@@ -66,16 +78,32 @@ export const WO = () => {
   const namesForm = watch("names") ?? "";
   const surnamesForm = watch("surnames") ?? "";
 
-  const handleChangeSpares = (spareSelectd: string) => {
-    getSpare(spareSelectd);
+  const handleChangeSpares = (spareSelectd: string, id: number) => {
+    console.log(spareSelectd);
+    console.log(id);
+    console.log(requestSpares);
+    // getSpare(spareSelectd);
+    // const requestSparesFormatted = requestSpares.map((item, index) => {
+    //   if (index === id) {
+    //     return {
+    //       ...item,
+    //       code: spare?.code_id ?? "",
+    //       stock: spare?.stock ?? 0,
+    //       name: spare?.name ?? "",
+    //       value: spare?.cost ?? 0,
+    //     };
+    //   }
+    //   return item;
+    // });
+    setRequestSpares(spareSelectd, id);
   };
 
-  useEffect(() => {
-    if (licenceForm.length >= 6) {
-      getClientByPPU(licenceForm);
-      getWorkOrderByPPU(licenceForm);
-    }
-  }, [licenceForm]);
+  // useEffect(() => {
+  //   if (licenceForm.length >= 6) {
+  //     getClientByPPU(licenceForm);
+  //     getWorkOrderByPPU(licenceForm);
+  //   }
+  // }, [licenceForm]);
 
   useEffect(() => {
     setValue("brand", vehicle?.brand ?? "");
@@ -87,14 +115,40 @@ export const WO = () => {
 
   useEffect(() => {
     getSpares();
+    getOrderGroups();
   }, []);
 
-  const top100Films = [
-    { title: "The Shawshank Redemption", cod_id: 2 },
-    { title: "The Godfather", cod_id: 3 },
-    { title: "The Godfather: Part II", cod_id: 4 },
-  ];
+  const AddNewSpare = () => {
+    const newSpare = {
+      id: 0,
+      stock: 0,
+      quantity: 0,
+      name: "",
+      code: "",
+      total: 0,
+      value: 0,
+    };
+    AddnewArrayOfSpare(newSpare);
+  };
 
+  const saveWO = () => {};
+
+  const findWO = () => {
+    getClientByPPU(licenceForm);
+  };
+
+  const deleteWOByLicence = () => {};
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number,
+    stock: number
+  ) => {
+    // if (Number(e.target.value) > stock) {
+    //   return;
+    // }
+    handleQuantity(e.target.value, index);
+  };
   return (
     <Layout>
       <Container
@@ -164,13 +218,19 @@ export const WO = () => {
               <Typography sx={{ mb: 2, mt: 2, fontWeight: "bold" }}>
                 DATOS DEL CLIENTE
               </Typography>
-              <Grid container spacing={3}>
+              <Grid container spacing={3} >
                 <Grid item xs={4}>
                   <TextField
                     required
                     fullWidth
                     id="names"
                     label={namesForm.length > 0 ? "" : "Nombres"}
+                    inputProps={{
+                      readOnly: client !== null && !modifyWO,
+                    }}
+                    sx={{
+                      opacity: client !== null && !modifyWO ? 0.5 : 1,
+                    }}
                     {...register("names")}
                   />
                   {errors.license_vehicle && (
@@ -183,6 +243,12 @@ export const WO = () => {
                     fullWidth
                     id="surnames"
                     label={surnamesForm.length > 0 ? "" : "Apellido(s)"}
+                    inputProps={{
+                      readOnly: client !== null && !modifyWO,
+                    }}
+                    sx={{
+                      opacity: client !== null && !modifyWO ? 0.5 : 1,
+                    }}
                     {...register("surnames")}
                   />
                   {errors.license_vehicle && (
@@ -195,6 +261,12 @@ export const WO = () => {
                     fullWidth
                     id="rut"
                     label={rutForm.length > 0 ? "" : "RUT"}
+                    inputProps={{
+                      readOnly: client !== null && !modifyWO,
+                    }}
+                    sx={{
+                      opacity: client !== null && !modifyWO ? 0.5 : 1,
+                    }}
                     {...register("rut")}
                   />
                   {errors.license_vehicle && (
@@ -203,6 +275,26 @@ export const WO = () => {
                 </Grid>
               </Grid>
             </Box>
+            <Grid container mt={2} spacing={3} columnSpacing={3}>
+              <Grid item xs={4}>
+                <Autocomplete
+                  id="ot_type"
+                  // value={ot_type}
+                  freeSolo
+                  fullWidth
+                  options={orderGroup.map((option) => option.name)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Código" />
+                  )}
+                  // onChange={(event, value) =>
+                  //   handleChangeSpares(String(value), index)
+                  // }
+                />
+              </Grid>
+              <Grid item xs={8} pl={2}>
+                <TextField fullWidth multiline rows={3} label="Observaciones" />
+              </Grid>
+            </Grid>
             <Typography sx={{ mt: 2, fontWeight: "bold" }}>
               HISTORIAL
             </Typography>
@@ -245,28 +337,75 @@ export const WO = () => {
                 )}
               </Table>
             </TableContainer>
-            <Typography sx={{ mt: 3, mb: 5, fontWeight: "bold" }}>
-              ORDEN DE TRABAJO
-            </Typography>
-            <Stack direction="row" spacing={2}>
-              <Autocomplete
-                id="free-solo"
-                freeSolo
-                options={top100Films.map((option) => option.cod_id)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Código" />
-                )}
-                sx={{ width: 200 }}
-                onChange={(event, value) => handleChangeSpares(String(value))}
-              />
-              <TextField label="Insumo/Repuesto" value={spare ? spare.name :  ""} />
-              <TextField
-                label="Unidades en stock"
-                value={spare ? spare.stock : ""}
-              />
-              <TextField label="Cantidad" />
-              <TextField label="Valor" value={spare ? spare.cost : ""} />
-              <TextField label="Total" />
+            <Grid
+              container
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Grid item>
+                <Typography sx={{ mt: 3, mb: 5, fontWeight: "bold" }}>
+                  ORDEN DE TRABAJO
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Button onClick={() => AddNewSpare()} variant="contained">
+                  +
+                </Button>
+              </Grid>
+            </Grid>
+            {requestSpares.map((item, index) => {
+              return (
+                <Stack direction="row" spacing={2} marginTop={2}>
+                  <Autocomplete
+                    id="free-solo"
+                    value={item.code}
+                    freeSolo
+                    options={allSpares.map((option) => option.code_id)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Código" />
+                    )}
+                    sx={{ width: 200 }}
+                    onChange={(event, value) =>
+                      handleChangeSpares(String(value), index)
+                    }
+                  />
+                  <TextField label="Insumo/Repuesto" value={item.name} />
+                  <TextField label="Unidades en stock" value={item.stock} />
+                  <TextField
+                    id="quantity"
+                    label="Cantidad"
+                    name="quantity"
+                    type="number"
+                    defaultValue={item.quantity}
+                    onChange={(event) => handleChange(event, index, item.stock)}
+                  />
+                  <TextField label="Valor" value={item.value} />
+                  <TextField label="Total" value={item.total} />
+                  <Button
+                    onClick={() => deleteSpare(index)}
+                    disabled={requestSpares.length === 1}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </Stack>
+              );
+            })}
+            <Stack sx={{ mt: 5 }} direction="row" spacing={2}>
+              <Button variant="contained" onClick={saveWO}>
+                GUARDAR
+              </Button>
+              <Button variant="contained" onClick={findWO}>
+                Buscar
+              </Button>
+              <Button variant="contained" onClick={() => setModifyWO(true)}>
+                MODIFICAR
+              </Button>
+              <Button variant="contained" onClick={deleteWOByLicence}>
+                ELIMINAR
+              </Button>
             </Stack>
           </CardContent>
         </Card>

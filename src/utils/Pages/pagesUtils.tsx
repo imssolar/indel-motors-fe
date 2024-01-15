@@ -15,90 +15,61 @@ interface PageConstant {
 
 export const clientPages: PageConstant[] = [
   {
-    name: "Buscar Cliente",
-    path: "/client-find",
-    icon: <SearchIcon />,
-  },
-  {
-    name: "Agregar Cliente",
+    name: "Administrar Clientes",
     path: "/client",
     icon: <PersonAddAltIcon />,
   },
 ];
 
 export const vehiclePages: PageConstant[] = [
+
   {
-    name: "Buscar Vehículos",
-    path: "/vehicle-find",
-    icon: <SearchIcon />,
-  },
-  {
-    name: "Agregar Vehículo",
+    name: "Administrar Vehículos",
     path: "/vehicle",
     icon: <CarRepairIcon />,
   },
 ];
 
 export const workOrderPages: PageConstant[] = [
+
   {
-    name: "Buscar Orden de Trabajo",
-    path: "/orders-list",
-    icon: <SearchIcon />,
-  },
-  {
-    name: "Agregar Orden de Trabajo",
+    name: "Administrar OT",
     path: "/work-order",
     icon: <NoteAddIcon />,
   },
 ];
 export const sparePages: PageConstant[] = [
+
   {
-    name: "Buscar Repuesto",
-    path: "/spare-list",
-    icon: <SearchIcon />,
-  },
-  {
-    name: "Agregar Repuesto",
+    name: "Administrar Repuestos",
     path: "/spare",
     icon: <BuildIcon />,
   },
 ];
 
 export const spareGroupPages: PageConstant[] = [
+
   {
-    name: "Buscar Grupos de Repuesto",
-    path: "/sparegroup-list",
-    icon: <SearchIcon />,
-  },
-  {
-    name: "Agregar Grupo de Repuesto",
+    name: "Administrar Grupo de Repuestos",
     path: "/spare-group",
     icon: <BackupTableIcon />,
   },
 ];
 
 export const unitPages: PageConstant[] = [
-  {
-    name: "Buscar Unidad",
-    path: "/unit-list",
-    icon: <SearchIcon />,
-  },
+
 
   {
-    name: "Agregar Unidad",
+    name: "Administrar Unidades",
     path: "/unit",
     icon: <SquareFootIcon />,
   },
 ];
 
 export const orderGroup: PageConstant[] = [
+
   {
-    name: "Buscar Tipo de orden",
-    path: "/ordergroup-list",
-    icon: <SearchIcon />,
-  },
-  {
-    name: "Agregar Tipo de orden",
+    name: "Administrar tipos de orden",
     path: "/order-group",
     icon: <FormatListNumberedIcon />,
   },

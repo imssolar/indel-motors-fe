@@ -1,114 +1,205 @@
 import {
-	Box,
-	CssBaseline,
-	Grid,
-	TextField,
-	Typography,
-	Button,
-	Container,
-} from '@mui/material'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { useContext, useEffect } from 'react'
-import { Layout } from '../../components/Layout/Layout'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { unitSchema } from '../../schemas/unitSchema'
-import { UnitContext } from '../../context/Unit/UnitContext'
-import Swal from 'sweetalert2'
+  Box,
+  CssBaseline,
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  Container,
+  Stack,
+  Card,
+  CardContent,
+} from "@mui/material";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { Layout } from "../../components/Layout/Layout";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { unitSchema } from "../../schemas/unitSchema";
+import { UnitContext } from "../../context/Unit/UnitContext";
+import Swal from "sweetalert2";
 
 interface IFormInput {
-	name_unit: string
-	description?: string
+  name_unit: string;
+  description?: string;
 }
 
 export const AddUnit = () => {
-	const {
-		handleSubmit,
-		register,
-		formState: { errors },
-	} = useForm<IFormInput>({
-		resolver: yupResolver(unitSchema),
-	})
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<IFormInput>({
+    resolver: yupResolver(unitSchema),
+  });
 
-	const { message, addUnit, clearUnitFinder } = useContext(UnitContext)
+  const [modifyUnit, setModifyUnit] = useState<Boolean>(false);
 
-	const onSubmit: SubmitHandler<IFormInput> = async (
-		formData: IFormInput
-	): Promise<void> => {
-		addUnit(formData)
-	}
+  const {
+    unit,
+    message,
+    addUnit,
+    UnitFind,
+    editUnit,
+    deleteUnit,
+    clearUnitFinder,
+  } = useContext(UnitContext);
 
-	useEffect((): void => {
-		clearUnitFinder()
-		if (message.text && message.type === 'error') {
-			Swal.fire({
-				icon: 'error',
-				title: 'Ooops!',
-				text: `${message.text}`,
-			})
-		}
-		if (message.text && message.type === 'info') {
-			Swal.fire({
-				icon: 'success',
-				title: 'Buen trabajo!',
-				text: `${message.text}`,
-			})
-		}
-	}, [message.text || message.type])
+  const nameUnitForm = watch("name_unit") ?? "";
+  const descriptionForm = watch("description") ?? "";
 
-	useEffect((): void => {
-		clearUnitFinder()
-	}, [])
+  useEffect(() => {
+    setValue("name_unit", unit?.name_unit ?? "");
+    setValue("description", unit?.description ?? "");
+  }, [unit]);
 
-	return (
-		<Layout>
-			<Container component={'main'} maxWidth="xs">
-				<CssBaseline />
-				<Box
-					sx={{
-						marginTop: 8,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}
-				>
-					<Typography component={'h1'} variant="h5">
-						Crear Unidad
-					</Typography>
-					<Box
-						component={'form'}
-						noValidate
-						sx={{ mt: 3 }}
-						onSubmit={handleSubmit(onSubmit)}
-					>
-						<Grid container spacing={3}>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="name_unit"
-									label="Nombre de la unidad"
-									{...register('name_unit')}
-								/>
-								{errors.name_unit && <p>{errors.name_unit.message}</p>}
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									fullWidth
-									id="description"
-									label="Descripción"
-									{...register('description')}
-								/>
+  const onSubmit: SubmitHandler<IFormInput> = async (
+    formData: IFormInput
+  ): Promise<void> => {
+    addUnit(formData);
+  };
 
-								{errors.description && <p>{errors.description.message}</p>}
-							</Grid>
-						</Grid>
+  useEffect((): void => {
+    clearUnitFinder();
+    if (message.text && message.type === "error") {
+      Swal.fire({
+        icon: "error",
+        title: "Ooops!",
+        text: `${message.text}`,
+      });
+    }
+    if (message.text && message.type === "info") {
+      Swal.fire({
+        icon: "success",
+        title: "Buen trabajo!",
+        text: `${message.text}`,
+      });
+    }
+  }, [message.text || message.type]);
 
-						<Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-							Guardar
-						</Button>
-					</Box>
-				</Box>
-			</Container>
-		</Layout>
-	)
-}
+  useEffect((): void => {
+    clearUnitFinder();
+  }, []);
+
+  const saveUnit = () => {
+    const obj = {
+      name_unit: nameUnitForm,
+      description: descriptionForm,
+    };
+    if (modifyUnit) {
+      editUnit(obj);
+      setModifyUnit(false);
+    } else {
+      addUnit(obj);
+    }
+
+    cleanForm();
+  };
+
+  const deleteUnitByName = () => {
+    Swal.fire({
+      title: "Eliminar Vehículo",
+      text: "Confirme la eliminación del vehículo",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteUnit(licenceForm);
+      }
+    });
+    cleanForm();
+  };
+
+  const findUnit = () => {
+    UnitFind(nameUnitForm);
+  };
+
+  const cleanForm = () => {
+    setValue("name_unit", "");
+    setValue("description", "");
+  };
+
+  return (
+    <Layout>
+      <Container
+        component={"main"}
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <CssBaseline />
+        <Card sx={{ boxShadow: 2 }}>
+          <CardContent sx={{ m: 4 }}>
+            <Typography
+              component={"h1"}
+              variant="h5"
+              sx={{ display: "flex", justifyContent: "center", mb: 5 }}
+            >
+              INGRESO DE UNIDADES
+            </Typography>
+            <Box
+              component={"form"}
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Typography sx={{ mb: 2, fontWeight: "bold" }}>DATOS</Typography>
+              <Grid container spacing={3} columnSpacing={3}>
+                <Grid item xs={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="name_unit"
+                    label="NOMBRE UNIDAD"
+                    inputProps={{ readOnly: modifyUnit }}
+                    sx={{ opacity: modifyUnit ? 0.5 : 1 }}
+                    {...register("name_unit")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="brand"
+                    label={descriptionForm?.length > 0 ? "" : "DESCRIPCIÓN"}
+                    inputProps={{
+                      readOnly: unit !== null && !modifyUnit,
+                    }}
+                    sx={{
+                      opacity: unit !== null && !modifyUnit ? 0.5 : 1,
+                    }}
+                    {...register("description")}
+                  />
+                  {/* {errors.license_vehicle && (
+                    <p>{errors.license_vehicle.message}</p>
+                  )} */}
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Stack sx={{ mt: 5 }} direction="row" spacing={2}>
+              <Button variant="contained" onClick={saveUnit}>
+                GUARDAR
+              </Button>
+              <Button variant="contained" onClick={findUnit}>
+                Buscar
+              </Button>
+              <Button variant="contained" onClick={() => setModifyUnit(true)}>
+                MODIFICAR
+              </Button>
+              <Button variant="contained" onClick={deleteUnitByName}>
+                ELIMINAR
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Container>
+    </Layout>
+  );
+};

@@ -1,9 +1,15 @@
 import { createContext } from "react";
 import { Spare } from "../../types/spare";
+import { RequestArraySpare } from "../../types/workorder";
 
 interface ContextProps {
   spare: Spare | null;
   allSpares: Spare[] | [];
+  requestSpares: RequestArraySpare[] | [];
+  setRequestSpares: (spareSelected: string, id: number) => void;
+  AddnewArrayOfSpare: (spareToAdd: RequestArraySpare) => void;
+  deleteSpare: (index: number) => void;
+  handleQuantity: (requestQuantity: string, index: number) => void;
   getSpare: (spareID: string) => Promise<void>;
   getSpares: () => Promise<void>;
 }

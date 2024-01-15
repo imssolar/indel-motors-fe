@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 
-export const schema = yup.object({
+export const vehicleSchema = yup.object({
 	license_plate: yup
 		.string()
 		.required('La patente del vehículo es obligatoria')

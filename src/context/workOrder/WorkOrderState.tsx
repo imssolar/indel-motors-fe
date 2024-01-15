@@ -1,6 +1,7 @@
 import { useReducer } from "react";
 import api from "../../api";
 import {
+  RequestArraySpare,
   RequestWO,
   ResponseGetClientByPPU,
   ResponseOTByPPU,
@@ -29,7 +30,8 @@ export interface state {
   sparesToWorkOrder: Spare[] | [];
   sparesFiltered: SpareFiltered[] | [];
   sparesOutStock: SparesWithoutStock[] | [];
-  otByPPU :ResponseOTByPPU | []
+  otByPPU: ResponseOTByPPU | [];
+  requestSpares: RequestArraySpare[] | [];
 }
 
 const INITIAL_STATE: state = {
@@ -42,7 +44,18 @@ const INITIAL_STATE: state = {
   sparesToWorkOrder: [],
   sparesFiltered: [],
   sparesOutStock: [],
-  otByPPU:[]
+  otByPPU: [],
+  requestSpares: [
+    {
+      id: 0,
+      stock: 0,
+      quantity: 0,
+      name: "",
+      code: "",
+      total: 0,
+      value: 0,
+    },
+  ],
 };
 
 export const WorkOrderState = ({ children }: stateProps) => {
@@ -64,18 +77,24 @@ export const WorkOrderState = ({ children }: stateProps) => {
     }
   };
 
-  const getWorkOrderByPPU=async(ppu:string)=>{
+  const getWorkOrderByPPU = async (ppu: string) => {
     try {
-      const {data} = await api.get(`/workorder/${ppu}`)
-      console.log("getwoppu",data)
+      const { data } = await api.get(`/workorder/${ppu}`);
+      console.log("getwoppu", data);
       dispatch({
-        type:'GET_WORKORDERBYPPU',
-        payload:data
-      })
+        type: "GET_WORKORDERBYPPU",
+        payload: data,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const setRequestSpares = (array: RequestArraySpare[], id: number) => {
+    dispatch({
+      type: "SET_REQUESTSPARE",
+    });
+  };
 
   const getWorkOrderType = async (): Promise<void> => {
     try {
@@ -176,6 +195,7 @@ export const WorkOrderState = ({ children }: stateProps) => {
         messageToShow,
         cleanSearchData,
         cleanMessage,
+        setRequestSpares
       }}
     >
       {children}

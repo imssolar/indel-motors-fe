@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Layout } from "../../components/Layout/Layout";
 import {
   Box,
@@ -8,43 +8,26 @@ import {
   Typography,
   Button,
   Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  SelectChangeEvent,
   Card,
   CardContent,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Select,
   Stack,
-  Autocomplete,
 } from "@mui/material";
-import { RequestWO, ResponseOTByPPU } from "../../types/workorder";
-import { useContext, useEffect } from "react";
-import { WorkOrderContext } from "../../context/workOrder/WorkOrderContext";
-import { SpareContext } from "../../context/Spare/SpareContext";
-const headers = [
-  "PPU",
-  "N° OT/COTIZACIÓN",
-  "FECHA(DD/MM/AA)",
-  "OBS. DE REPARACIÓN",
-  "TIPO OT",
-];
 
-const rows = [
-  {
-    ppu: "CV-12-23",
-    ot: "12345",
-    fecha: "22-03-23",
-    obs: "Cambio de polea",
-    tipo: "Preventiva",
-  },
-];
+import { useContext, useEffect, useState } from "react";
+import { VehicleContext } from "../../context/Vehicle/VehicleContext";
+import Swal from "sweetalert2";
+import { yupResolver } from '@hookform/resolvers/yup'
+import { vehicleSchema } from "../../schemas/vehicleSchema";
+
+
+interface IFormVehicle {
+  license_plate: string;
+  brand: string;
+  model: string;
+  year_production: number;
+  rut_client: string;
+  vin_number: string;
+}
 
 export const AddVehicle = () => {
   const {
@@ -53,47 +36,108 @@ export const AddVehicle = () => {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<RequestWO>();
+  } = useForm<IFormVehicle>({
+    resolver: yupResolver(vehicleSchema),
+  });
 
-  const { vehicle, client, otByPPU, getClientByPPU, getWorkOrderByPPU } =
-    useContext(WorkOrderContext);
+  const [modifyVehicle, setModifyVehicle] = useState<Boolean>(false);
 
-  const { spare, allSpares, getSpare, getSpares } = useContext(SpareContext);
-  const licenceForm = watch("license_vehicle") ?? "";
+  const {
+    vehicle,
+    message,
+    addVehicle,
+    getVehicle,
+    updateVehicle,
+    deleteVehicle,
+  } = useContext(VehicleContext);
+  const licenceForm = watch("license_plate") ?? "";
   const brandForm = watch("brand") ?? "";
   const modelForm = watch("model") ?? "";
-  const rutForm = watch("rut") ?? "";
-  const namesForm = watch("names") ?? "";
-  const surnamesForm = watch("surnames") ?? "";
-
-  const handleChangeSpares = (spareSelectd: string) => {
-    getSpare(spareSelectd);
-  };
+  const rutForm = watch("rut_client") ?? "";
+  const yearform = watch("year_production") ?? "";
+  const vinNumberForm = watch("vin_number") ?? "";
 
   useEffect(() => {
     if (licenceForm.length >= 6) {
-      getClientByPPU(licenceForm);
-      getWorkOrderByPPU(licenceForm);
+      getVehicle(licenceForm);
     }
   }, [licenceForm]);
 
   useEffect(() => {
     setValue("brand", vehicle?.brand ?? "");
     setValue("model", vehicle?.model ?? "");
-    setValue("names", client?.names ?? "");
-    setValue("surnames", client?.surnames ?? "");
-    setValue("rut", client?.rut ?? "");
+    setValue("year_production", vehicle?.year_production ?? 2023);
+    setValue("vin_number", vehicle?.vin_number ?? "");
+    setValue("rut_client", vehicle?.client?.rut ?? "");
   }, [vehicle]);
 
-  useEffect(() => {
-    getSpares();
-  }, []);
+  const onSubmit: SubmitHandler<IFormVehicle> = async (formDataVehicle) => {
+    console.log(formDataVehicle);
+  };
 
-  const top100Films = [
-    { title: "The Shawshank Redemption", cod_id: 2 },
-    { title: "The Godfather", cod_id: 3 },
-    { title: "The Godfather: Part II", cod_id: 4 },
-  ];
+  const saveVehicle = () => {
+    const obj = {
+      license_plate: licenceForm,
+      brand: brandForm,
+      model: modelForm,
+      year_production: yearform,
+      vin_number: vinNumberForm,
+      rut_client: rutForm,
+    };
+    if (modifyVehicle) {
+      updateVehicle(obj);
+      setModifyVehicle(false);
+    } else {
+      addVehicle(obj);
+    }
+
+    cleanForm();
+  };
+
+  const cleanForm = () => {
+    setValue("brand", "");
+    setValue("model", "");
+    setValue("year_production", 2023);
+    setValue("vin_number", "");
+    setValue("rut_client", "");
+    setValue("license_plate", "");
+  };
+
+  const deleteVehicleByLicence = () => {
+    Swal.fire({
+      title: "Eliminar Vehículo",
+      text: "Confirme la eliminación del vehículo",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteVehicle(licenceForm);
+      }
+    });
+    cleanForm();
+  };
+
+
+  useEffect(() => {
+    if (message.text && message.type === "error") {
+      Swal.fire({
+        icon: "error",
+        title: "Ooops!",
+        text: `${message.text}`,
+      });
+    }
+    if (message.text && message.type === "info") {
+      Swal.fire({
+        icon: "success",
+        title: "Buen trabajo!",
+        text: `${message.text}`,
+      });
+    }
+  }, [message.text || message.type]);
 
   return (
     <Layout>
@@ -102,11 +146,11 @@ export const AddVehicle = () => {
         maxWidth="xl"
         sx={{
           display: "flex",
-          justifyContent: "",
+          justifyContent: "center",
         }}
       >
         <CssBaseline />
-        <Card>
+        <Card sx={{boxShadow:2}}>
           <CardContent sx={{ m: 4 }}>
             <Typography
               component={"h1"}
@@ -115,7 +159,11 @@ export const AddVehicle = () => {
             >
               INGRESO DE VEHICULOS
             </Typography>
-            <Box component={"form"} noValidate>
+            <Box
+              component={"form"}
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <Typography sx={{ mb: 2, fontWeight: "bold" }}>
                 DATOS DEL VEHÍCULO
               </Typography>
@@ -126,10 +174,12 @@ export const AddVehicle = () => {
                     fullWidth
                     id="license_vehicle"
                     label="Patente"
-                    {...register("license_vehicle")}
+                    inputProps={{ readOnly: modifyVehicle }}
+                    sx={{ opacity: modifyVehicle ? 0.5 : 1 }}
+                    {...register("license_plate")}
                   />
-                  {errors.license_vehicle && (
-                    <p>{errors.license_vehicle.message}</p>
+                  {errors.license_plate && (
+                    <p>{errors.license_plate.message}</p>
                   )}
                 </Grid>
                 <Grid item xs={3}>
@@ -138,23 +188,31 @@ export const AddVehicle = () => {
                     fullWidth
                     id="brand"
                     label={brandForm?.length > 0 ? "" : "Marca"}
-                    inputProps={{ readOnly: true }}
-                    sx={{ opacity: "0.5" }}
+                    inputProps={{
+                      readOnly: vehicle !== null && !modifyVehicle,
+                    }}
+                    sx={{
+                      opacity: vehicle !== null && !modifyVehicle ? 0.5 : 1,
+                    }}
                     {...register("brand")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
                   )} */}
                 </Grid>
-				<Grid item xs={3}>
+                <Grid item xs={3}>
                   <TextField
                     required
                     fullWidth
                     id="brand"
-                    label={brandForm?.length > 0 ? "" : "Año Fabricación"}
-                    inputProps={{ readOnly: true }}
-                    sx={{ opacity: "0.5" }}
-                    {...register("brand")}
+                    label={yearform ? "" : "Año Fabricación"}
+                    inputProps={{
+                      readOnly: vehicle !== null && !modifyVehicle,
+                    }}
+                    sx={{
+                      opacity: vehicle !== null && !modifyVehicle ? 0.5 : 1,
+                    }}
+                    {...register("year_production")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -165,8 +223,12 @@ export const AddVehicle = () => {
                     required
                     fullWidth
                     id="model"
-                    inputProps={{ readOnly: true }}
-                    sx={{ opacity: "0.5" }}
+                    inputProps={{
+                      readOnly: vehicle !== null && !modifyVehicle,
+                    }}
+                    sx={{
+                      opacity: vehicle !== null && !modifyVehicle ? 0.5 : 1,
+                    }}
                     label={modelForm?.length > 0 ? "" : "Modelo"}
                     {...register("model")}
                   />
@@ -179,57 +241,55 @@ export const AddVehicle = () => {
                     required
                     fullWidth
                     id="model"
-                    inputProps={{ readOnly: true }}
-                    sx={{ opacity: "0.5" }}
-                    label={modelForm?.length > 0 ? "" : "N° de Chasis"}
-                    {...register("model")}
+                    inputProps={{
+                      readOnly: vehicle !== null && !modifyVehicle,
+                    }}
+                    sx={{
+                      opacity: vehicle !== null && !modifyVehicle ? 0.5 : 1,
+                    }}
+                    label={vinNumberForm?.length > 0 ? "" : "N° de Chasis"}
+                    {...register("vin_number")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
                   )} */}
                 </Grid>
-                
               </Grid>
               <Typography sx={{ mb: 2, mt: 2, fontWeight: "bold" }}>
                 DATOS DEL CLIENTE
               </Typography>
               <Grid container spacing={3}>
-               
-                
                 <Grid item xs={4}>
                   <TextField
                     required
                     fullWidth
-                    id="rut"
+                    id="rut_client"
+                    inputProps={{ readOnly: vehicle !== null }}
+                    sx={{ opacity: vehicle !== null ? 0.5 : 1 }}
                     label={rutForm.length > 0 ? "" : "RUT ASOCIADO"}
-                    {...register("rut")}
+                    {...register("rut_client")}
                   />
-                  {errors.license_vehicle && (
+                  {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
-                  )}
+                  )} */}
                 </Grid>
               </Grid>
             </Box>
-            
-           
-           
-            <Stack sx={{mt:5}} direction="row" spacing={2}>
-               <Button variant="contained">
-			     
-				 GUARDAR
-			   </Button>
-			   <Button variant="contained">
-			     
-				 Buscar
-			   </Button>
-			   <Button variant="contained">
-			     
-				 MODIFICAR
-			   </Button>
-			   <Button variant="contained">
-			     
-				 ELIMINAR
-			   </Button>
+
+            <Stack sx={{ mt: 5 }} direction="row" spacing={2}>
+              <Button variant="contained" onClick={saveVehicle}>
+                GUARDAR
+              </Button>
+              <Button variant="contained">Buscar</Button>
+              <Button
+                variant="contained"
+                onClick={() => setModifyVehicle(true)}
+              >
+                MODIFICAR
+              </Button>
+              <Button variant="contained" onClick={deleteVehicleByLicence}>
+                ELIMINAR
+              </Button>
             </Stack>
           </CardContent>
         </Card>

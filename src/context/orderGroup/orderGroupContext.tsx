@@ -1,9 +1,9 @@
 import { createContext } from 'react'
-import { orderGroupRequest } from '../../types/orderGroup'
+import { orderGroupRequest, orderGroupResponse } from '../../types/orderGroup'
 import { Message } from '../../types/message'
 
 interface ContextProps {
-	orderGroup: orderGroupRequest | null
+	orderGroup: orderGroupResponse[] | []
 	message: Message
 	getOrderGroups: () => Promise<void>
 	getOrderGroup: (orderGroup: orderGroupRequest) => Promise<void>

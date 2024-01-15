@@ -1,6 +1,7 @@
 import { createContext } from "react";
 
 import {
+  RequestArraySpare,
   RequestWO,
   ResponseGetClientByPPU,
   ResponseOTByPPU,
@@ -22,7 +23,7 @@ interface ContextProps {
   client: Client | null;
   sparesFiltered: SpareFiltered[] | [];
   sparesOutStock: SparesWithoutStock[] | [];
-  otByPPU: ResponseOTByPPU | []
+  otByPPU: ResponseOTByPPU | [];
   getClientByPPU: (license_plate: string) => void;
   getWorkOrderByPPU: (ppu: string) => void;
   getWorkOrderType: () => Promise<void>;

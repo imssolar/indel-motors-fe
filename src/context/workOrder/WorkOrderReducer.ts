@@ -22,7 +22,8 @@ type WorOrderReducerTypes =
   | { type: "MESSAGE_WORKORDER"; payload: Message }
   | { type: "SET_SPARESWITHOUTSTOCK"; payload: SparesWithoutStock[] }
   | { type: "CLEAN_SEARCH" }
-  | { type: "CLEAN_MESSAGE" };
+  | { type: "CLEAN_MESSAGE" }
+  | { type: "SET_REQUESTSPARE" };
 
 export const WorkOrderReducer = (
   state: state,
@@ -55,10 +56,10 @@ export const WorkOrderReducer = (
       };
 
     case "GET_WORKORDERBYPPU":
-      return{
+      return {
         ...state,
-        otByPPU:action.payload
-      }
+        otByPPU: action.payload,
+      };
 
     case "ADD_WORKORDER":
       return {

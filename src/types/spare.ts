@@ -16,6 +16,7 @@ export interface Spare {
   spareGroup_id: number;
   updatedAt: string;
   createdAt: string;
+  code_id:string
 }
 
 export interface SpareFiltered extends Spare{

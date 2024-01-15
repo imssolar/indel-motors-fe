@@ -2,14 +2,11 @@ import {
   Client,
   Login,
   Menu,
-  EditClient,
   AddVehicle,
-  FindVehicle,
 } from "./Pages";
 import { AuthState } from "./context/Auth/AuthState";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ClientState } from "./context/Client/ClientState";
-import { FindClient } from "./Pages/Client/FindClient";
 import { VehicleState } from "./context/Vehicle/VehicleState";
 import { WorkOrderState } from "./context/workOrder/WorkOrderState";
 import { OrderGroupState } from "./context/orderGroup/OrderGroupState";
@@ -18,9 +15,7 @@ import { SpareGroupState } from "./context/SpareGroup/SpareGroupState";
 import { EditSpareGroup } from "./Pages/spareGroup/EditSpareGroup";
 import { FindSpareGroup } from "./Pages/spareGroup/FindSpareGroup";
 import { AddUnit } from "./Pages/Unit/AddUnit";
-import { FindUnit } from "./Pages/Unit/FindUnit";
 import { UnitState } from "./context/Unit/UnitState";
-import { EditUnit } from "./Pages/Unit/EditUnit";
 import { WorkOrder } from "./Pages/WorkOrder/WorkOrder";
 import { OutStockTable } from "./Pages/WorkOrder/OutStockTable";
 import { AddOrderGroup } from "./Pages/orderGroup/AddOrderGroup";
@@ -47,19 +42,6 @@ function App() {
       path: "/client",
       element: <Client />,
     },
-
-    {
-      path: "/client-find",
-      element: <FindClient />,
-    },
-    {
-      path: "/client-edit",
-      element: <EditClient />,
-    },
-    {
-      path: "/vehicle-find",
-      element: <FindVehicle />,
-    },
     {
       path: "/vehicle",
       element: <AddVehicle />,
@@ -80,14 +62,6 @@ function App() {
     {
       path: "/unit",
       element: <AddUnit />,
-    },
-    {
-      path: "/unit-list",
-      element: <FindUnit />,
-    },
-    {
-      path: "/unit-edit",
-      element: <EditUnit />,
     },
     {
       path: "/work-order",
