@@ -9,7 +9,7 @@ interface ContextProps {
   setRequestSpares: (spareSelected: string, id: number) => void;
   AddnewArrayOfSpare: (spareToAdd: RequestArraySpare) => void;
   deleteSpare: (index: number) => void;
-  handleQuantity: (requestQuantity: string, index: number) => void;
+  handleQuantity: (requestQuantity: number, index: number) => void;
   getSpare: (spareID: string) => Promise<void>;
   getSpares: () => Promise<void>;
 }

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Layout } from "../../components/Layout/Layout";
 import {
   Box,
@@ -26,6 +26,7 @@ import {
 } from "@mui/material";
 import {
   RequestArraySpare,
+  RequestTest,
   RequestWO,
   ResponseOTByPPU,
 } from "../../types/workorder";
@@ -48,8 +49,9 @@ export const WO = () => {
     register,
     watch,
     setValue,
+    getValues,
     formState: { errors },
-  } = useForm<RequestWO>();
+  } = useForm<RequestTest>();
 
   const { vehicle, client, otByPPU, getClientByPPU, getWorkOrderByPPU } =
     useContext(WorkOrderContext);
@@ -77,11 +79,10 @@ export const WO = () => {
   const rutForm = watch("rut") ?? "";
   const namesForm = watch("names") ?? "";
   const surnamesForm = watch("surnames") ?? "";
+  const observationForm = watch("observations") ?? "";
+  const otTypeForm = watch("ot_type") ?? "";
 
   const handleChangeSpares = (spareSelectd: string, id: number) => {
-    console.log(spareSelectd);
-    console.log(id);
-    console.log(requestSpares);
     // getSpare(spareSelectd);
     // const requestSparesFormatted = requestSpares.map((item, index) => {
     //   if (index === id) {
@@ -98,12 +99,12 @@ export const WO = () => {
     setRequestSpares(spareSelectd, id);
   };
 
-  // useEffect(() => {
-  //   if (licenceForm.length >= 6) {
-  //     getClientByPPU(licenceForm);
-  //     getWorkOrderByPPU(licenceForm);
-  //   }
-  // }, [licenceForm]);
+  useEffect(() => {
+    if (licenceForm.length >= 6) {
+      getClientByPPU(licenceForm);
+      getWorkOrderByPPU(licenceForm);
+    }
+  }, [licenceForm]);
 
   useEffect(() => {
     setValue("brand", vehicle?.brand ?? "");
@@ -131,7 +132,22 @@ export const WO = () => {
     AddnewArrayOfSpare(newSpare);
   };
 
-  const saveWO = () => {};
+  const saveWO = () => {
+    const values = getValues();
+    const woToSave = {
+      license_vehicle: values.license_vehicle,
+      observations: values.observations,
+      spares: requestSpares.map((spare) => ({
+        id: spare.code,
+        stock: spare.quantity,
+      })),
+      ot_type: values.ot_type,
+    };
+    console.log(woToSave);
+    console.log(values);
+    //validar que llega cuando se le da submit
+    //utilizar el método getValues() de react-hook-form para ver los datos
+  };
 
   const findWO = () => {
     getClientByPPU(licenceForm);
@@ -144,10 +160,21 @@ export const WO = () => {
     index: number,
     stock: number
   ) => {
-    // if (Number(e.target.value) > stock) {
-    //   return;
-    // }
-    handleQuantity(e.target.value, index);
+    if (Number(e.target.value) > stock) {
+      return;
+    }
+    handleQuantity(Number(e.target.value), index);
+  };
+
+  /**
+   *
+   *
+   */
+
+  const handleChangeOtType = (ot: string, event: any) => {
+    setValue("ot_type", ot.split("-")[0]);
+    console.log(ot.split("-")[0]);
+    console.log(event);
   };
   return (
     <Layout>
@@ -169,7 +196,7 @@ export const WO = () => {
             >
               MODULO OT
             </Typography>
-            <Box component={"form"} noValidate>
+            <Box component={"form"} noValidate onSubmit={handleSubmit(saveWO)}>
               <Typography sx={{ mb: 2, fontWeight: "bold" }}>
                 DATOS DEL VEHÍCULO
               </Typography>
@@ -194,7 +221,7 @@ export const WO = () => {
                     label={brandForm?.length > 0 ? "" : "Marca"}
                     inputProps={{ readOnly: true }}
                     sx={{ opacity: "0.5" }}
-                    {...register("brand")}
+                    // {...register("brand")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -208,7 +235,7 @@ export const WO = () => {
                     inputProps={{ readOnly: true }}
                     sx={{ opacity: "0.5" }}
                     label={modelForm?.length > 0 ? "" : "Modelo"}
-                    {...register("model")}
+                    // {...register("model")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -218,7 +245,7 @@ export const WO = () => {
               <Typography sx={{ mb: 2, mt: 2, fontWeight: "bold" }}>
                 DATOS DEL CLIENTE
               </Typography>
-              <Grid container spacing={3} >
+              <Grid container spacing={3}>
                 <Grid item xs={4}>
                   <TextField
                     required
@@ -231,7 +258,7 @@ export const WO = () => {
                     sx={{
                       opacity: client !== null && !modifyWO ? 0.5 : 1,
                     }}
-                    {...register("names")}
+                    // {...register("names")}
                   />
                   {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -249,7 +276,7 @@ export const WO = () => {
                     sx={{
                       opacity: client !== null && !modifyWO ? 0.5 : 1,
                     }}
-                    {...register("surnames")}
+                    // {...register("surnames")}
                   />
                   {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -267,7 +294,7 @@ export const WO = () => {
                     sx={{
                       opacity: client !== null && !modifyWO ? 0.5 : 1,
                     }}
-                    {...register("rut")}
+                    // {...register("rut")}
                   />
                   {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -279,20 +306,28 @@ export const WO = () => {
               <Grid item xs={4}>
                 <Autocomplete
                   id="ot_type"
-                  // value={ot_type}
+                  {...register("ot_type")}
                   freeSolo
                   fullWidth
-                  options={orderGroup.map((option) => option.name)}
+                  options={orderGroup.map(
+                    (option) => `${option.id}-${option.name}`
+                  )}
                   renderInput={(params) => (
                     <TextField {...params} label="Código" />
                   )}
-                  // onChange={(event, value) =>
-                  //   handleChangeSpares(String(value), index)
-                  // }
+                  onChange={(event, value) =>
+                    handleChangeOtType(value ?? "", event)
+                  }
                 />
               </Grid>
               <Grid item xs={8} pl={2}>
-                <TextField fullWidth multiline rows={3} label="Observaciones" />
+                <TextField
+                  {...register("observations")}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  label="Observaciones"
+                />
               </Grid>
             </Grid>
             <Typography sx={{ mt: 2, fontWeight: "bold" }}>
@@ -375,11 +410,10 @@ export const WO = () => {
                   <TextField label="Insumo/Repuesto" value={item.name} />
                   <TextField label="Unidades en stock" value={item.stock} />
                   <TextField
-                    id="quantity"
+                    id={`quantity-${index}`}
                     label="Cantidad"
-                    name="quantity"
-                    type="number"
-                    defaultValue={item.quantity}
+                    name={`quantity-${index}`}
+                    value={item.quantity}
                     onChange={(event) => handleChange(event, index, item.stock)}
                   />
                   <TextField label="Valor" value={item.value} />

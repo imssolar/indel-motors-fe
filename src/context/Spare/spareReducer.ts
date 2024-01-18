@@ -66,7 +66,7 @@ export const SpareReducer = (state: ISpareState, action: spareActionType) => {
           if (i === index) {
             return {
               ...item,
-              quantity: requestQuantity > item.stock ? 0:requestQuantity,
+              quantity: requestQuantity > item.stock ? 0 : requestQuantity,
               total: requestQuantity * item.value,
             };
           }

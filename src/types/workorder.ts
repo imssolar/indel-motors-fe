@@ -83,3 +83,14 @@ export interface ResponseOTByPPU {
   license_vehicle: string;
   ot_type: number;
 }
+
+export interface RequestTest {
+  observations: string;
+  license_vehicle: string;
+  brand: string;
+  model: string;
+  names: string;
+  surnames: string;
+  rut: string;
+  ot_type:string;
+}

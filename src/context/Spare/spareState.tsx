@@ -78,10 +78,10 @@ export const SpareState = ({ children }: spareProps) => {
     });
   };
 
-  const handleQuantity = (requestQuantity: string, index: number) => {
+  const handleQuantity = (requestQuantity: number, index: number) => {
     dispatch({
       type: "SET_QUANTITY",
-      payload: { requestQuantity: Number(requestQuantity), index },
+      payload: { requestQuantity: requestQuantity, index },
     });
   };
 
