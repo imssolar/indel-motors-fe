@@ -5,14 +5,20 @@ export interface RequestWO {
   observations: string;
   ot_type: number;
   license_vehicle: string;
-  spares: Spare[];
+  spares: SpareRequest[];
   names?: string;
   brand?: string;
   model?: string;
   rut?: string;
   surnames?: string;
+  is_confirmed:boolean;
+  is_payment:boolean;
 }
 
+interface SpareRequest{
+  id:string;
+  stock:number;
+}
 export interface RequestArraySpare {
   id: number;
   stock: number;
@@ -93,4 +99,6 @@ export interface RequestTest {
   surnames: string;
   rut: string;
   ot_type:string;
+  is_confirmed:boolean;
+  is_payment:boolean;
 }

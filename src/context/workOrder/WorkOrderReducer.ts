@@ -6,6 +6,7 @@ import { Vehicle } from "../../types/vehicle";
 import {
   ResponseGetClientByPPU,
   ResponseOTByPPU,
+  ResponseWO,
   SparesWithoutStock,
 } from "../../types/workorder";
 import { state } from "./WorkOrderState";
@@ -18,12 +19,13 @@ type WorOrderReducerTypes =
   | { type: "GET_SPARESTOWORK"; payload: Spare[] }
   | { type: "FILTER_SPARESTOWORK"; payload: number[] }
   | { type: "CLEAN_CLIENTNAMES" }
-  | { type: "ADD_WORKORDER" }
+  | { type: "GENERATE_QUOTATION" }
   | { type: "MESSAGE_WORKORDER"; payload: Message }
   | { type: "SET_SPARESWITHOUTSTOCK"; payload: SparesWithoutStock[] }
   | { type: "CLEAN_SEARCH" }
   | { type: "CLEAN_MESSAGE" }
-  | { type: "SET_REQUESTSPARE" };
+  | { type: "SET_REQUESTSPARE" }
+  | { type: "GET_WOBYID"; payload: ResponseWO };
 
 export const WorkOrderReducer = (
   state: state,
@@ -61,7 +63,7 @@ export const WorkOrderReducer = (
         otByPPU: action.payload,
       };
 
-    case "ADD_WORKORDER":
+    case "GENERATE_QUOTATION":
       return {
         ...state,
       };
@@ -106,6 +108,12 @@ export const WorkOrderReducer = (
       return {
         ...state,
         message: {},
+      };
+
+    case "GET_WOBYID":
+      return {
+        ...state,
+        workorder: action.payload,
       };
 
     default:

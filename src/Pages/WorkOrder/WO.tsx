@@ -23,24 +23,24 @@ import {
   Select,
   Stack,
   Autocomplete,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
-import {
-  RequestArraySpare,
-  RequestTest,
-  RequestWO,
-  ResponseOTByPPU,
-} from "../../types/workorder";
+import Checkbox from "@mui/material/Checkbox";
+import { RequestTest, ResponseOTByPPU } from "../../types/workorder";
 import { useContext, useEffect, useState } from "react";
 import { WorkOrderContext } from "../../context/workOrder/WorkOrderContext";
 import { SpareContext } from "../../context/Spare/spareContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { OrderGroupContext } from "../../context/orderGroup/OrderGroupContext";
+
 const headers = [
   "PPU",
   "N° OT/COTIZACIÓN",
   "FECHA(DD/MM/AA)",
   "OBS. DE REPARACIÓN",
   "TIPO OT",
+  "Editar",
 ];
 
 export const WO = () => {
@@ -53,8 +53,16 @@ export const WO = () => {
     formState: { errors },
   } = useForm<RequestTest>();
 
-  const { vehicle, client, otByPPU, getClientByPPU, getWorkOrderByPPU } =
-    useContext(WorkOrderContext);
+  const {
+    vehicle,
+    client,
+    otByPPU,
+    generateQuotationRequest,
+    generateQuationStatus,
+    getClientByPPU,
+    getWorkOrderByPPU,
+    getWorkOrderByOTNumber,
+  } = useContext(WorkOrderContext);
 
   const [modifyWO, setModifyWO] = useState<boolean>(false);
 
@@ -70,17 +78,16 @@ export const WO = () => {
   } = useContext(SpareContext);
 
   const { orderGroup, getOrderGroups } = useContext(OrderGroupContext);
-  // const [requestSpares, setRequestSpares] = useState<RequestArraySpare[]>([
-  //   { id: 0, stock: 0, quantity: 0, name: "", code: "", total: 0, value: 0 },
-  // ]);
+
   const licenceForm = watch("license_vehicle") ?? "";
   const brandForm = watch("brand") ?? "";
   const modelForm = watch("model") ?? "";
   const rutForm = watch("rut") ?? "";
   const namesForm = watch("names") ?? "";
   const surnamesForm = watch("surnames") ?? "";
-  const observationForm = watch("observations") ?? "";
-  const otTypeForm = watch("ot_type") ?? "";
+
+  const [isConfirmedOT, setIsConfirmedOT] = useState(false);
+  const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
 
   const handleChangeSpares = (spareSelectd: string, id: number) => {
     // getSpare(spareSelectd);
@@ -132,7 +139,7 @@ export const WO = () => {
     AddnewArrayOfSpare(newSpare);
   };
 
-  const saveWO = () => {
+  const generateQuotation = () => {
     const values = getValues();
     const woToSave = {
       license_vehicle: values.license_vehicle,
@@ -141,12 +148,31 @@ export const WO = () => {
         id: spare.code,
         stock: spare.quantity,
       })),
-      ot_type: values.ot_type,
+      ot_type: Number(values.ot_type),
+      is_confirmed: isConfirmedOT,
+      is_payment: isPaymentConfirmed,
     };
     console.log(woToSave);
-    console.log(values);
-    //validar que llega cuando se le da submit
-    //utilizar el método getValues() de react-hook-form para ver los datos
+    generateQuotationRequest(woToSave);
+  };
+
+  const generateQuotationWithStatus = () => {
+    const values = getValues();
+    const woWithStatus = {
+      license_vehicle: values.license_vehicle,
+      observations: values.observations,
+      spares: requestSpares.map((spare) => ({
+        id: spare.code,
+        stock: spare.quantity,
+      })),
+      ot_type: Number(values.ot_type),
+      status: "Expired",
+    };
+    generateQuationStatus(woWithStatus);
+  };
+
+  const editOT = (ot_number: number) => {
+    getWorkOrderByOTNumber(ot_number);
   };
 
   const findWO = () => {
@@ -165,11 +191,6 @@ export const WO = () => {
     }
     handleQuantity(Number(e.target.value), index);
   };
-
-  /**
-   *
-   *
-   */
 
   const handleChangeOtType = (ot: string, event: any) => {
     setValue("ot_type", ot.split("-")[0]);
@@ -196,7 +217,7 @@ export const WO = () => {
             >
               MODULO OT
             </Typography>
-            <Box component={"form"} noValidate onSubmit={handleSubmit(saveWO)}>
+            <Box component={"form"} noValidate>
               <Typography sx={{ mb: 2, fontWeight: "bold" }}>
                 DATOS DEL VEHÍCULO
               </Typography>
@@ -204,9 +225,9 @@ export const WO = () => {
                 <Grid item xs={4}>
                   <TextField
                     required
+                    label="Patente"
                     fullWidth
                     id="license_vehicle"
-                    label="Patente"
                     {...register("license_vehicle")}
                   />
                   {errors.license_vehicle && (
@@ -221,7 +242,7 @@ export const WO = () => {
                     label={brandForm?.length > 0 ? "" : "Marca"}
                     inputProps={{ readOnly: true }}
                     sx={{ opacity: "0.5" }}
-                    // {...register("brand")}
+                    {...register("brand")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -235,7 +256,7 @@ export const WO = () => {
                     inputProps={{ readOnly: true }}
                     sx={{ opacity: "0.5" }}
                     label={modelForm?.length > 0 ? "" : "Modelo"}
-                    // {...register("model")}
+                    {...register("model")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -258,7 +279,7 @@ export const WO = () => {
                     sx={{
                       opacity: client !== null && !modifyWO ? 0.5 : 1,
                     }}
-                    // {...register("names")}
+                    {...register("names")}
                   />
                   {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -276,7 +297,7 @@ export const WO = () => {
                     sx={{
                       opacity: client !== null && !modifyWO ? 0.5 : 1,
                     }}
-                    // {...register("surnames")}
+                    {...register("surnames")}
                   />
                   {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -294,42 +315,73 @@ export const WO = () => {
                     sx={{
                       opacity: client !== null && !modifyWO ? 0.5 : 1,
                     }}
-                    // {...register("rut")}
+                    {...register("rut")}
                   />
                   {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
                   )}
                 </Grid>
               </Grid>
+
+              <Grid container mt={2} spacing={3} columnSpacing={3}>
+                <Grid item xs={4}>
+                  <Autocomplete
+                    id="ot_type"
+                    {...register("ot_type")}
+                    freeSolo
+                    fullWidth
+                    options={orderGroup.map(
+                      (option) => `${option.id}-${option.name}`
+                    )}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Código" />
+                    )}
+                    onChange={(event, value) =>
+                      handleChangeOtType(value ?? "", event)
+                    }
+                  />
+                </Grid>
+                <Grid item xs={8} pl={2}>
+                  <TextField
+                    {...register("observations")}
+                    fullWidth
+                    multiline
+                    rows={1}
+                    label="Observaciones"
+                  />
+                </Grid>
+              </Grid>
+              <Typography sx={{ mb: 2, mt: 4, fontWeight: "bold" }}>
+                CONFIRMACIÓN / PAGO
+              </Typography>
+              <Grid container mt={2} columnSpacing={3} mb={5}>
+                <Grid item xs={3}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={isConfirmedOT}
+                        onChange={(e) => setIsConfirmedOT(e.target.checked)}
+                      />
+                    }
+                    label="Confirmación Orden de trabajo"
+                  />
+                </Grid>
+                <Grid item ml={5} xs={4}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={isPaymentConfirmed}
+                        onChange={(e) =>
+                          setIsPaymentConfirmed(e.target.checked)
+                        }
+                      />
+                    }
+                    label="Confirmación Pago Orden de trabajo"
+                  />
+                </Grid>
+              </Grid>
             </Box>
-            <Grid container mt={2} spacing={3} columnSpacing={3}>
-              <Grid item xs={4}>
-                <Autocomplete
-                  id="ot_type"
-                  {...register("ot_type")}
-                  freeSolo
-                  fullWidth
-                  options={orderGroup.map(
-                    (option) => `${option.id}-${option.name}`
-                  )}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Código" />
-                  )}
-                  onChange={(event, value) =>
-                    handleChangeOtType(value ?? "", event)
-                  }
-                />
-              </Grid>
-              <Grid item xs={8} pl={2}>
-                <TextField
-                  {...register("observations")}
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label="Observaciones"
-                />
-              </Grid>
-            </Grid>
+
             <Typography sx={{ mt: 2, fontWeight: "bold" }}>
               HISTORIAL
             </Typography>
@@ -365,6 +417,13 @@ export const WO = () => {
                         </TableCell>
                         <TableCell component="th" scope="row">
                           {workOrderField.ot_type}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          <Button
+                            onClick={() => editOT(workOrderField.ot_number)}
+                          >
+                            Editar
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -428,9 +487,12 @@ export const WO = () => {
               );
             })}
             <Stack sx={{ mt: 5 }} direction="row" spacing={2}>
-              <Button variant="contained" onClick={saveWO}>
-                GUARDAR
+              <Button variant="contained" onClick={generateQuotation}>
+                Cotizar
               </Button>
+              {/* <Button variant="contained" onClick={generateQuotationWithStatus}>
+                Guardar
+              </Button> */}
               <Button variant="contained" onClick={findWO}>
                 Buscar
               </Button>

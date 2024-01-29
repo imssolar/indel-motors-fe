@@ -120,16 +120,13 @@ export const WorkOrderState = ({ children }: stateProps) => {
     }
   };
 
-  const addNewWorkOrder = async (newWorkOrder: RequestWO) => {
+  const generateQuotationRequest = async (newWorkOrder: RequestWO) => {
     try {
       const { data } = await api.post(`/workorder`, newWorkOrder);
       const { message, type, sparesWithoutStock } = data;
-      console.log(message);
-      console.log(type);
-      console.log(sparesWithoutStock);
 
       dispatch({
-        type: "ADD_WORKORDER",
+        type: "GENERATE_QUOTATION",
       });
       messageToShow({ text: message, type });
     } catch (error: any) {
@@ -139,6 +136,25 @@ export const WorkOrderState = ({ children }: stateProps) => {
       messageToShow({ text: message, type });
       return;
     }
+  };
+
+  const generateQuationStatus = async (workOrder: RequestWO) => {
+    try {
+      const { data } = await api.put(`/workorder/${11}`, workOrder);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getWorkOrderByOTNumber = async (otNumber: number) => {
+    try {
+      const { data } = await api.get(`/workorder/otnumber/${otNumber}`);
+      console.log(data)
+      dispatch({
+        type:"GET_WOBYID",
+        payload:data
+      })
+    } catch (error) {}
   };
 
   const filterSparesToWorkOrder = (sparesIDs: number[]) => {
@@ -187,7 +203,8 @@ export const WorkOrderState = ({ children }: stateProps) => {
         ...state,
         getClientByPPU,
         getWorkOrderType,
-        addNewWorkOrder,
+        generateQuotationRequest,
+        generateQuationStatus,
         getSparesToWorkOrder,
         filterSparesToWorkOrder,
         getWorkOrderByPPU,
@@ -195,7 +212,8 @@ export const WorkOrderState = ({ children }: stateProps) => {
         messageToShow,
         cleanSearchData,
         cleanMessage,
-        setRequestSpares
+        setRequestSpares,
+        getWorkOrderByOTNumber,
       }}
     >
       {children}

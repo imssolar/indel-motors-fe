@@ -27,8 +27,10 @@ interface ContextProps {
   getClientByPPU: (license_plate: string) => void;
   getWorkOrderByPPU: (ppu: string) => void;
   getWorkOrderType: () => Promise<void>;
+  getWorkOrderByOTNumber:(otNumber:number)=>Promise<void>;
   getSparesToWorkOrder: () => Promise<void>;
-  addNewWorkOrder: (newWorkOrder: RequestWO) => Promise<void>;
+  generateQuotationRequest: (newWorkOrder: RequestWO) => Promise<void>;
+  generateQuationStatus: (workOrder: RequestWO) => Promise<void>;
   setSparesWithoutStock: (sparesOut: SparesWithoutStock[]) => void;
   filterSparesToWorkOrder: (sparesIDs: number[]) => void;
   cleanClientNames: () => void;
