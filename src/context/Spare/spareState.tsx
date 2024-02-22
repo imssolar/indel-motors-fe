@@ -85,6 +85,24 @@ export const SpareState = ({ children }: spareProps) => {
     });
   };
 
+  const setRequestSpareEdit = (requestSparesEdit: any, spares_stock: any) => {
+    const requestWithStock = requestSparesEdit.map((res) => {
+      const findId = spares_stock.find((item) => item.id === res.code_id);
+      console.log(findId);
+      return {
+        ...res,
+        quantity: findId.stock,
+        value:res.cost,
+        total:findId.stock * res.cost,
+        code:res.code_id
+      };
+    });
+    dispatch({
+      type: "SET_REQUESTSPARE_EDIT",
+      payload: requestWithStock,
+    });
+  };
+
   return (
     <SpareContext.Provider
       value={{
@@ -95,6 +113,7 @@ export const SpareState = ({ children }: spareProps) => {
         AddnewArrayOfSpare,
         deleteSpare,
         handleQuantity,
+        setRequestSpareEdit,
       }}
     >
       {children}

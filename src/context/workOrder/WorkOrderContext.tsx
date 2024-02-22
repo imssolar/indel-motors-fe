@@ -6,6 +6,7 @@ import {
   ResponseGetClientByPPU,
   ResponseOTByPPU,
   ResponseWO,
+  ResponseWOWithSpares,
   SparesWithoutStock,
 } from "../../types/workorder";
 import { orderGroupResponse } from "../../types/orderGroup";
@@ -14,7 +15,7 @@ import { Message } from "../../types/message";
 import { Client } from "../../types/client";
 
 interface ContextProps {
-  workorder: ResponseWO | null;
+  workorder: ResponseWOWithSpares | null;
   workorders: ResponseWO[] | [];
   message: Message;
   ordersType: orderGroupResponse[] | [];
@@ -27,7 +28,7 @@ interface ContextProps {
   getClientByPPU: (license_plate: string) => void;
   getWorkOrderByPPU: (ppu: string) => void;
   getWorkOrderType: () => Promise<void>;
-  getWorkOrderByOTNumber:(otNumber:number)=>Promise<void>;
+  getWorkOrderByOTNumber: (otNumber: number) => Promise<void>;
   getSparesToWorkOrder: () => Promise<void>;
   generateQuotationRequest: (newWorkOrder: RequestWO) => Promise<void>;
   generateQuationStatus: (workOrder: RequestWO) => Promise<void>;
@@ -37,6 +38,7 @@ interface ContextProps {
   messageToShow: (message: Message) => void;
   cleanSearchData: () => void;
   cleanMessage: () => void;
+  
 }
 
 export const WorkOrderContext = createContext({} as ContextProps);

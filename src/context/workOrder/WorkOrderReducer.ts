@@ -7,6 +7,7 @@ import {
   ResponseGetClientByPPU,
   ResponseOTByPPU,
   ResponseWO,
+  ResponseWOWithSpares,
   SparesWithoutStock,
 } from "../../types/workorder";
 import { state } from "./WorkOrderState";
@@ -25,7 +26,7 @@ type WorOrderReducerTypes =
   | { type: "CLEAN_SEARCH" }
   | { type: "CLEAN_MESSAGE" }
   | { type: "SET_REQUESTSPARE" }
-  | { type: "GET_WOBYID"; payload: ResponseWO };
+  | { type: "GET_WOBYID"; payload: ResponseWOWithSpares };
 
 export const WorkOrderReducer = (
   state: state,

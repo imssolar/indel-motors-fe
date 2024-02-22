@@ -11,7 +11,8 @@ type spareActionType =
   | {
       type: "SET_QUANTITY";
       payload: { requestQuantity: number; index: number };
-    };
+    }
+  | {type :"SET_REQUESTSPARE_EDIT",payload:any}
 
 export const SpareReducer = (state: ISpareState, action: spareActionType) => {
   switch (action.type) {
@@ -73,6 +74,12 @@ export const SpareReducer = (state: ISpareState, action: spareActionType) => {
           return item;
         }),
       };
+
+    case "SET_REQUESTSPARE_EDIT":
+      return {
+        ...state,
+        requestSpares:action.payload
+      }
     default:
       return state;
   }

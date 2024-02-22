@@ -39,8 +39,15 @@ export const Client = () => {
     resolver: yupResolver(clientSchema),
   });
 
-  const { client, message, addClient, findCLient, getClients, editClient, deleteClient } =
-    useContext(ClientContext);
+  const {
+    client,
+    message,
+    addClient,
+    findCLient,
+    getClients,
+    editClient,
+    deleteClient,
+  } = useContext(ClientContext);
   const rutForm = watch("rut") ?? "";
   const namesForm = watch("names") ?? "";
   const surnamesForm = watch("surnames") ?? "";
@@ -99,10 +106,10 @@ export const Client = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-		deleteClient(rutForm)
+        deleteClient(rutForm);
+        cleanForm();
       }
     });
-    cleanForm();
   };
 
   const saveCLient = () => {
@@ -129,7 +136,11 @@ export const Client = () => {
     findCLient(rutForm);
   };
 
- 
+  const canModifyClient = () => {
+    if (client) {
+      setModifyClient(true);
+    }
+  };
 
   const cleanForm = () => {
     setValue("rut", "");
@@ -204,7 +215,7 @@ export const Client = () => {
                   <TextField
                     required
                     fullWidth
-                    id="brand"
+                    id="surnames"
                     label={surnamesForm?.length > 0 ? "" : "APELLIDOS"}
                     inputProps={{
                       readOnly: client !== null && !modifyClient,
@@ -229,8 +240,8 @@ export const Client = () => {
                     fullWidth
                     id="cellphone_number"
                     inputProps={{
-						readOnly: client !== null && !modifyClient,
-					  }}
+                      readOnly: client !== null && !modifyClient,
+                    }}
                     sx={{ opacity: client !== null && !modifyClient ? 0.5 : 1 }}
                     label={cellphoneForm.length > 0 ? "" : "TELÉFONO"}
                     {...register("cellphone_number")}
@@ -245,8 +256,8 @@ export const Client = () => {
                     fullWidth
                     id="address"
                     inputProps={{
-						readOnly: client !== null && !modifyClient,
-					  }}
+                      readOnly: client !== null && !modifyClient,
+                    }}
                     sx={{ opacity: client !== null && !modifyClient ? 0.5 : 1 }}
                     label={addressform.length > 0 ? "" : "DIRECCIÓN"}
                     {...register("address")}
@@ -261,8 +272,8 @@ export const Client = () => {
                     fullWidth
                     id="district"
                     inputProps={{
-						readOnly: client !== null && !modifyClient,
-					  }}
+                      readOnly: client !== null && !modifyClient,
+                    }}
                     sx={{ opacity: client !== null && !modifyClient ? 0.5 : 1 }}
                     label={districtForm.length > 0 ? "" : "COMUNA"}
                     {...register("district")}
@@ -277,8 +288,8 @@ export const Client = () => {
                     fullWidth
                     id="email"
                     inputProps={{
-						readOnly: client !== null && !modifyClient,
-					  }}
+                      readOnly: client !== null && !modifyClient,
+                    }}
                     sx={{ opacity: client !== null && !modifyClient ? 0.5 : 1 }}
                     label={emailForm.length > 0 ? "" : "CORREO"}
                     {...register("email")}
@@ -297,7 +308,7 @@ export const Client = () => {
               <Button variant="contained" onClick={findClientByRut}>
                 Buscar
               </Button>
-              <Button variant="contained" onClick={() => setModifyClient(true)}>
+              <Button variant="contained" onClick={canModifyClient}>
                 MODIFICAR
               </Button>
               <Button variant="contained" onClick={deleteClientByRut}>

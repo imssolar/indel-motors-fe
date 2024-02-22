@@ -50,6 +50,7 @@ export const WO = () => {
     watch,
     setValue,
     getValues,
+    reset,
     formState: { errors },
   } = useForm<RequestTest>();
 
@@ -57,6 +58,7 @@ export const WO = () => {
     vehicle,
     client,
     otByPPU,
+    workorder,
     generateQuotationRequest,
     generateQuationStatus,
     getClientByPPU,
@@ -75,6 +77,7 @@ export const WO = () => {
     AddnewArrayOfSpare,
     getSpares,
     deleteSpare,
+    setRequestSpareEdit,
   } = useContext(SpareContext);
 
   const { orderGroup, getOrderGroups } = useContext(OrderGroupContext);
@@ -85,6 +88,8 @@ export const WO = () => {
   const rutForm = watch("rut") ?? "";
   const namesForm = watch("names") ?? "";
   const surnamesForm = watch("surnames") ?? "";
+  const observations = watch("observations") ?? "";
+  const otType = watch("ot_type") ?? "";
 
   const [isConfirmedOT, setIsConfirmedOT] = useState(false);
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
@@ -105,6 +110,15 @@ export const WO = () => {
     // });
     setRequestSpares(spareSelectd, id);
   };
+
+  //Crear una nueva función que se ejecuta en el useEffect de editar que se llame setRequestSparesEdit y le pase el array de spare que se obtiene desde el context
+  //Con este array ir a mapear los spareRequest. Crear un caso en el reducer para que a la variable requestSpare se le pase estos nuevos valores (esto esta en el contexto de Spare)
+
+  useEffect(() => {
+    if (workorder) {
+      setRequestSpareEdit(workorder?.spares, workorder.workOrder.spares_stock);
+    }
+  }, [workorder?.spares]);
 
   useEffect(() => {
     if (licenceForm.length >= 6) {
@@ -139,15 +153,28 @@ export const WO = () => {
     AddnewArrayOfSpare(newSpare);
   };
 
+  const calculateNewStock = () => {
+    return requestSpares.map((res) => {
+      const findId = workorder?.workOrder?.spares_stock?.find((item) => item.id === res.code_id);
+      console.log(findId);
+      return {
+        id: findId?.id,
+        stock: findId?.stock ?  res.quantity - findId?.stock : res.quantity,
+      };
+    });
+  };
+
   const generateQuotation = () => {
     const values = getValues();
     const woToSave = {
       license_vehicle: values.license_vehicle,
       observations: values.observations,
-      spares: requestSpares.map((spare) => ({
-        id: spare.code,
-        stock: spare.quantity,
-      })),
+      spares: modifyWO
+        ? calculateNewStock()
+        : requestSpares.map((spare) => ({
+            id: spare.code,
+            stock: spare.quantity,
+          })),
       ot_type: Number(values.ot_type),
       is_confirmed: isConfirmedOT,
       is_payment: isPaymentConfirmed,
@@ -197,6 +224,18 @@ export const WO = () => {
     console.log(ot.split("-")[0]);
     console.log(event);
   };
+
+  useEffect(() => {
+    if (workorder) {
+      const values = getValues();
+      console.log(workorder);
+      reset({
+        ...values,
+        observations: workorder.workOrder.observations,
+        ot_type: String(workorder.otTypeProps),
+      });
+    }
+  }, [workorder]);
   return (
     <Layout>
       <Container
@@ -326,6 +365,7 @@ export const WO = () => {
               <Grid container mt={2} spacing={3} columnSpacing={3}>
                 <Grid item xs={4}>
                   <Autocomplete
+                    value={otType}
                     id="ot_type"
                     {...register("ot_type")}
                     freeSolo
@@ -347,7 +387,10 @@ export const WO = () => {
                     fullWidth
                     multiline
                     rows={1}
-                    label="Observaciones"
+                    id="observations"
+                    placeholder="Observaciones"
+                    // label={"Observaciones"}
+                    label={observations ? null : "Observaciones"}
                   />
                 </Grid>
               </Grid>
@@ -396,7 +439,7 @@ export const WO = () => {
                 </TableHead>
                 {otByPPU && (
                   <TableBody>
-                    {otByPPU.map((workOrderField: ResponseOTByPPU) => (
+                    {otByPPU?.map((workOrderField: ResponseOTByPPU) => (
                       <TableRow
                         key={workOrderField.ot_number}
                         sx={{

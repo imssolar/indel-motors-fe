@@ -43,6 +43,7 @@ export const Login = () => {
     //react-table props: pasarle botones, data, columnas y cantidad de elementos
     //ruta privada del fe-supermercado
     login(sendData);
+    
     navigate("/menu");
   };
 

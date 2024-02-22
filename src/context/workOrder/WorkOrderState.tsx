@@ -6,6 +6,7 @@ import {
   ResponseGetClientByPPU,
   ResponseOTByPPU,
   ResponseWO,
+  ResponseWOWithSpares,
   SparesWithoutStock,
 } from "../../types/workorder";
 import { WorkOrderReducer } from "./WorkOrderReducer";
@@ -14,14 +15,13 @@ import { orderGroupResponse } from "../../types/orderGroup";
 import { Spare, SpareFiltered } from "../../types/spare";
 import { Message } from "../../types/message";
 import { Client } from "../../types/client";
-import { Try } from "@mui/icons-material";
 
 interface stateProps {
   children: React.ReactNode;
 }
 
 export interface state {
-  workorder: ResponseWO | null;
+  workorder: ResponseWOWithSpares | null;
   workorders: ResponseWO[] | [];
   message: Message;
   vehicle: ResponseGetClientByPPU | null;
@@ -146,14 +146,34 @@ export const WorkOrderState = ({ children }: stateProps) => {
     }
   };
 
+  const formatWorkOrdersStockSpare = (newValues: string) => {
+    return newValues.split("|").map((i) => {
+      const values = i.split(",");
+
+      return {
+        id: values[0],
+        stock: Number(values[1]),
+      };
+    });
+  };
+
   const getWorkOrderByOTNumber = async (otNumber: number) => {
     try {
       const { data } = await api.get(`/workorder/otnumber/${otNumber}`);
-      console.log(data)
+      console.log(data);
+      const formattedWO = {
+        ...data,
+        workOrder: {
+          ...data.workOrder,
+          spares_stock: formatWorkOrdersStockSpare(
+            data.workOrder?.spares_stock
+          ),
+        },
+      };
       dispatch({
-        type:"GET_WOBYID",
-        payload:data
-      })
+        type: "GET_WOBYID",
+        payload: formattedWO,
+      });
     } catch (error) {}
   };
 

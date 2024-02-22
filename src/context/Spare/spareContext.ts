@@ -12,6 +12,7 @@ interface ContextProps {
   handleQuantity: (requestQuantity: number, index: number) => void;
   getSpare: (spareID: string) => Promise<void>;
   getSpares: () => Promise<void>;
+  setRequestSpareEdit: (requestSparesEdit: any, spares_stock: any) => void;
 }
 
 export const SpareContext = createContext({} as ContextProps);
