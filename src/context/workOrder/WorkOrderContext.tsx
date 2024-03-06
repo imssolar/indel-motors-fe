@@ -24,7 +24,7 @@ interface ContextProps {
   client: Client | null;
   sparesFiltered: SpareFiltered[] | [];
   sparesOutStock: SparesWithoutStock[] | [];
-  otByPPU: ResponseOTByPPU | [];
+  otByPPU: ResponseOTByPPU[] | [];
   getClientByPPU: (license_plate: string) => void;
   getWorkOrderByPPU: (ppu: string) => void;
   getWorkOrderType: () => Promise<void>;
@@ -32,13 +32,13 @@ interface ContextProps {
   getSparesToWorkOrder: () => Promise<void>;
   generateQuotationRequest: (newWorkOrder: RequestWO) => Promise<void>;
   generateQuationStatus: (workOrder: RequestWO) => Promise<void>;
+  updateWO: (id: number, wo: RequestWO) => Promise<void>;
   setSparesWithoutStock: (sparesOut: SparesWithoutStock[]) => void;
   filterSparesToWorkOrder: (sparesIDs: number[]) => void;
   cleanClientNames: () => void;
   messageToShow: (message: Message) => void;
   cleanSearchData: () => void;
   cleanMessage: () => void;
-  
 }
 
 export const WorkOrderContext = createContext({} as ContextProps);

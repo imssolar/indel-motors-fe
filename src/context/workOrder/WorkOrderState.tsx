@@ -30,7 +30,7 @@ export interface state {
   sparesToWorkOrder: Spare[] | [];
   sparesFiltered: SpareFiltered[] | [];
   sparesOutStock: SparesWithoutStock[] | [];
-  otByPPU: ResponseOTByPPU | [];
+  otByPPU: ResponseOTByPPU[] | [];
   requestSpares: RequestArraySpare[] | [];
 }
 
@@ -90,11 +90,11 @@ export const WorkOrderState = ({ children }: stateProps) => {
     }
   };
 
-  const setRequestSpares = (array: RequestArraySpare[], id: number) => {
-    dispatch({
-      type: "SET_REQUESTSPARE",
-    });
-  };
+  // const setRequestSpares = (array: RequestArraySpare[], id: number) => {
+  //   dispatch({
+  //     type: "SET_REQUESTSPARE",
+  //   });
+  // };
 
   const getWorkOrderType = async (): Promise<void> => {
     try {
@@ -177,6 +177,16 @@ export const WorkOrderState = ({ children }: stateProps) => {
     } catch (error) {}
   };
 
+  const updateWO = async (id: number, wo: RequestWO) => {
+    try {
+      await api.put(`/workorder/${id}`, wo);
+
+      dispatch({
+        type: "UPDATE_WO",
+      });
+    } catch (error) {}
+  };
+
   const filterSparesToWorkOrder = (sparesIDs: number[]) => {
     dispatch({
       type: "FILTER_SPARESTOWORK",
@@ -232,8 +242,10 @@ export const WorkOrderState = ({ children }: stateProps) => {
         messageToShow,
         cleanSearchData,
         cleanMessage,
-        setRequestSpares,
+        // setRequestSpares,
         getWorkOrderByOTNumber,
+        updateWO,
+        setSparesWithoutStock
       }}
     >
       {children}

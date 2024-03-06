@@ -64,6 +64,7 @@ export const WO = () => {
     getClientByPPU,
     getWorkOrderByPPU,
     getWorkOrderByOTNumber,
+    updateWO
   } = useContext(WorkOrderContext);
 
   const [modifyWO, setModifyWO] = useState<boolean>(false);
@@ -155,11 +156,13 @@ export const WO = () => {
 
   const calculateNewStock = () => {
     return requestSpares.map((res) => {
-      const findId = workorder?.workOrder?.spares_stock?.find((item) => item.id === res.code_id);
+      const findId = workorder?.workOrder?.spares_stock?.find(
+        (item) => item.id === res.code
+      );
       console.log(findId);
       return {
         id: findId?.id,
-        stock: findId?.stock ?  res.quantity - findId?.stock : res.quantity,
+        stock: findId?.stock ? res.quantity - findId?.stock : res.quantity,
       };
     });
   };
@@ -180,25 +183,16 @@ export const WO = () => {
       is_payment: isPaymentConfirmed,
     };
     console.log(woToSave);
+    if (modifyWO && workorder) {
+      updateWO(workorder?.workOrder.ot_number, woToSave);
+      setModifyWO(false)
+      return
+    }
     generateQuotationRequest(woToSave);
   };
 
-  const generateQuotationWithStatus = () => {
-    const values = getValues();
-    const woWithStatus = {
-      license_vehicle: values.license_vehicle,
-      observations: values.observations,
-      spares: requestSpares.map((spare) => ({
-        id: spare.code,
-        stock: spare.quantity,
-      })),
-      ot_type: Number(values.ot_type),
-      status: "Expired",
-    };
-    generateQuationStatus(woWithStatus);
-  };
-
   const editOT = (ot_number: number) => {
+    setModifyWO(true);
     getWorkOrderByOTNumber(ot_number);
   };
 
@@ -234,6 +228,8 @@ export const WO = () => {
         observations: workorder.workOrder.observations,
         ot_type: String(workorder.otTypeProps),
       });
+      setIsConfirmedOT(workorder.workOrder.is_confirmed);
+      setIsPaymentConfirmed(workorder.workOrder.is_payment);
     }
   }, [workorder]);
   return (
@@ -539,9 +535,9 @@ export const WO = () => {
               <Button variant="contained" onClick={findWO}>
                 Buscar
               </Button>
-              <Button variant="contained" onClick={() => setModifyWO(true)}>
+              {/* <Button variant="contained" disabled={modifyWO} onClick={() => setModifyWO(true)}>
                 MODIFICAR
-              </Button>
+              </Button> */}
               <Button variant="contained" onClick={deleteWOByLicence}>
                 ELIMINAR
               </Button>

@@ -1,7 +1,7 @@
 import { Client } from "../../types/client";
 import { Message } from "../../types/message";
 import { orderGroupResponse } from "../../types/orderGroup";
-import { Spare } from "../../types/spare";
+import { Spare, SpareFiltered } from "../../types/spare";
 import { Vehicle } from "../../types/vehicle";
 import {
   ResponseGetClientByPPU,
@@ -17,7 +17,7 @@ type WorOrderReducerTypes =
   | { type: "GET_VEHICLEBYPPU"; payload: Vehicle }
   | { type: "GET_WORKORDERBYPPU"; payload: ResponseOTByPPU[] }
   | { type: "GET_ORDERSTYPE"; payload: orderGroupResponse[] }
-  | { type: "GET_SPARESTOWORK"; payload: Spare[] }
+  | { type: "GET_SPARESTOWORK"; payload: SpareFiltered[] }
   | { type: "FILTER_SPARESTOWORK"; payload: number[] }
   | { type: "CLEAN_CLIENTNAMES" }
   | { type: "GENERATE_QUOTATION" }
@@ -26,12 +26,13 @@ type WorOrderReducerTypes =
   | { type: "CLEAN_SEARCH" }
   | { type: "CLEAN_MESSAGE" }
   | { type: "SET_REQUESTSPARE" }
-  | { type: "GET_WOBYID"; payload: ResponseWOWithSpares };
+  | { type: "GET_WOBYID"; payload: ResponseWOWithSpares }
+  | {type:"UPDATE_WO"}
 
 export const WorkOrderReducer = (
   state: state,
   action: WorOrderReducerTypes
-) => {
+):state =>{
   switch (action.type) {
     case "GET_CLIENTBYPPU":
       return {
@@ -80,11 +81,11 @@ export const WorkOrderReducer = (
         }),
       };
 
-    case "CLEAN_CLIENTNAMES":
-      return {
-        ...state,
-        clientNames: null,
-      };
+    // case "CLEAN_CLIENTNAMES":
+    //   return {
+    //     ...state,
+    //     clientNames: null,
+    //   };
 
     case "MESSAGE_WORKORDER":
       return {
@@ -117,6 +118,12 @@ export const WorkOrderReducer = (
         workorder: action.payload,
       };
 
+    case "UPDATE_WO":
+      return{
+        ...state,
+        message:{}
+      }
+    
     default:
       return state;
   }

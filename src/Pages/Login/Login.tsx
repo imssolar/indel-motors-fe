@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Box,
   CssBaseline,
@@ -16,7 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../../schemas/loginSchema";
 import { AuthContext } from "../../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { ClientContext } from "../../context/Client/ClientContext";
+import Swal from "sweetalert2";
 
 interface IFormInput {
   email: string;
@@ -26,8 +26,7 @@ interface IFormInput {
 export const Login = () => {
   const [showMessage, setShowMessage] = useState(false);
 
-  const { login } = useContext(AuthContext);
-  const {getClients} = useContext(ClientContext)
+  const { login, token, messageAuth, cleanMessage } = useContext(AuthContext);
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -42,10 +41,40 @@ export const Login = () => {
     //armar context
     //react-table props: pasarle botones, data, columnas y cantidad de elementos
     //ruta privada del fe-supermercado
-    login(sendData);
-    
-    navigate("/menu");
+    await login(sendData);
+
+    // navigate("/menu")
   };
+
+  useEffect(() => {
+    if (messageAuth.text && messageAuth.type === "error") {
+      console.log("type error");
+      Swal.fire({
+        icon: "error",
+        title: "Ooops!",
+        text: `${messageAuth.text}`,
+      }).then(({ isConfirmed }) => {
+        if (isConfirmed) cleanMessage();
+      });
+      return;
+    }
+    if (messageAuth.text && messageAuth.type === "notFound") {
+      Swal.fire({
+        icon: "error",
+        title: "Ooops!",
+        text: `${messageAuth.text}`,
+      }).then(({ isConfirmed }) => {
+        if (isConfirmed) cleanMessage();
+      });
+      return;
+    }
+  }, [messageAuth.text || messageAuth.type]);
+
+  useEffect(() => {
+    if (token || localStorage.getItem("token")) {
+      navigate("/menu");
+    }
+  }, [token]);
 
   return (
     <Grid container component={"main"} sx={{ height: "100vh" }}>

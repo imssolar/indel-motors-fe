@@ -3,7 +3,7 @@ import { User, UserLogin } from "../../types/user";
 import api from "../../api";
 import { AuthContext } from "./AuthContext";
 import { AuthReducer } from "./AuthReducer";
-import { useNavigate } from "react-router-dom";
+import { Message } from "../../types/message";
 interface stateProps {
   children: React.ReactNode;
 }
@@ -11,11 +11,13 @@ interface stateProps {
 export interface state {
   token: string;
   user: User | null;
+  messageAuth: Message | {};
 }
 
 const INITIAL_STATE: state = {
   token: "",
   user: null,
+  messageAuth: {},
 };
 
 export const AuthState = ({ children }: stateProps) => {
@@ -38,7 +40,18 @@ export const AuthState = ({ children }: stateProps) => {
           token,
         },
       });
-    } catch (error) {}
+    } catch (error: any) {
+      const { message, type } = error.response.data;
+      messageToShow({ text: message, type });
+      return;
+    }
+  };
+
+  const messageToShow = (message: Message): void => {
+    dispatch({
+      type: "MESSAGE_AUTH",
+      payload: message,
+    });
   };
 
   const logout = () => {};
@@ -58,8 +71,16 @@ export const AuthState = ({ children }: stateProps) => {
     });
   };
 
+  const cleanMessage = () => {
+    dispatch({
+      type: "CLEAN_MESSAGE",
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, login, getToken, logout }}>
+    <AuthContext.Provider
+      value={{ ...state, login, getToken, logout, cleanMessage }}
+    >
       {children}
     </AuthContext.Provider>
   );

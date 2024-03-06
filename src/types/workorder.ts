@@ -16,7 +16,7 @@ export interface RequestWO {
 }
 
 interface SpareRequest {
-  id: string;
+  id: string | undefined;
   stock: number;
 }
 export interface RequestArraySpare {
@@ -84,9 +84,9 @@ export interface ResponseGetClientByPPU {
   brand: string;
   model: string;
   year_production: number;
-  vin_number: number;
+  vin_number: string;
   rut_client: string;
-  client: Client;
+  client?: Client;
 }
 
 export interface ResponseOTByPPU {
