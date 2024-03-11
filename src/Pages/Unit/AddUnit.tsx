@@ -163,7 +163,7 @@ export const AddUnit = () => {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField
+                  {/* <TextField
                     required
                     fullWidth
                     id="brand"
@@ -175,7 +175,9 @@ export const AddUnit = () => {
                       opacity: unit !== null && !modifyUnit ? 0.5 : 1,
                     }}
                     {...register("description")}
-                  />
+                  /> */}
+                  <label>Descripción</label>
+                  <input name="description" type="text" value={descriptionForm} placeholder="descripción"/>
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
                   )} */}

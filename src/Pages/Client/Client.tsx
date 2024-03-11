@@ -311,7 +311,7 @@ export const Client = () => {
               <Button variant="contained" onClick={canModifyClient}>
                 MODIFICAR
               </Button>
-              <Button variant="contained" onClick={deleteClientByRut}>
+              <Button disabled={!rutForm.length} variant="contained" onClick={deleteClientByRut}>
                 ELIMINAR
               </Button>
             </Stack>

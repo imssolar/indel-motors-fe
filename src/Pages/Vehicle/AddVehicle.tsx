@@ -16,9 +16,8 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { VehicleContext } from "../../context/Vehicle/VehicleContext";
 import Swal from "sweetalert2";
-import { yupResolver } from '@hookform/resolvers/yup'
+import { yupResolver } from "@hookform/resolvers/yup";
 import { vehicleSchema } from "../../schemas/vehicleSchema";
-
 
 interface IFormVehicle {
   license_plate: string;
@@ -49,6 +48,7 @@ export const AddVehicle = () => {
     getVehicle,
     updateVehicle,
     deleteVehicle,
+    
   } = useContext(VehicleContext);
   const licenceForm = watch("license_plate") ?? "";
   const brandForm = watch("brand") ?? "";
@@ -91,15 +91,19 @@ export const AddVehicle = () => {
       addVehicle(obj);
     }
 
-    cleanForm();
+    // cleanForm();
   };
 
   const cleanForm = () => {
+    if (message.type === "error") {
+      setValue("rut_client", "");
+      return;
+    }
+    setValue("rut_client", "");
     setValue("brand", "");
     setValue("model", "");
     setValue("year_production", 2023);
     setValue("vin_number", "");
-    setValue("rut_client", "");
     setValue("license_plate", "");
   };
 
@@ -117,10 +121,9 @@ export const AddVehicle = () => {
       if (result.isConfirmed) {
         deleteVehicle(licenceForm);
       }
+      cleanForm();
     });
-    cleanForm();
   };
-
 
   useEffect(() => {
     if (message.text && message.type === "error") {
@@ -128,6 +131,8 @@ export const AddVehicle = () => {
         icon: "error",
         title: "Ooops!",
         text: `${message.text}`,
+      }).then(()=>{
+        cleanForm()
       });
     }
     if (message.text && message.type === "info") {
@@ -135,7 +140,9 @@ export const AddVehicle = () => {
         icon: "success",
         title: "Buen trabajo!",
         text: `${message.text}`,
-      });
+      }).then(()=>{
+        cleanForm()
+      })
     }
   }, [message.text || message.type]);
 
@@ -150,7 +157,7 @@ export const AddVehicle = () => {
         }}
       >
         <CssBaseline />
-        <Card sx={{boxShadow:2}}>
+        <Card sx={{ boxShadow: 2 }}>
           <CardContent sx={{ m: 4 }}>
             <Typography
               component={"h1"}
@@ -184,17 +191,18 @@ export const AddVehicle = () => {
                 </Grid>
                 <Grid item xs={3}>
                   <TextField
+                    {...register("brand")}
                     required
                     fullWidth
                     id="brand"
-                    label={brandForm?.length > 0 ? "" : "Marca"}
+                    label={"Marca"}
                     inputProps={{
                       readOnly: vehicle !== null && !modifyVehicle,
                     }}
+                    InputLabelProps={{ shrink: true }}
                     sx={{
-                      opacity: vehicle !== null && !modifyVehicle ? 0.5 : 1,
+                      opacity: vehicle !== null && !modifyVehicle ? 0.85 : 1,
                     }}
-                    {...register("brand")}
                   />
                   {/* {errors.license_vehicle && (
                     <p>{errors.license_vehicle.message}</p>
@@ -280,7 +288,7 @@ export const AddVehicle = () => {
               <Button variant="contained" onClick={saveVehicle}>
                 GUARDAR
               </Button>
-              <Button variant="contained">Buscar</Button>
+              {/* <Button variant="contained">Buscar</Button> */}
               <Button
                 variant="contained"
                 onClick={() => setModifyVehicle(true)}
