@@ -7,6 +7,7 @@ interface ContextProps {
   message: Message;
   addSpareGroup: (spareGroup: newSpareGroup) => Promise<void>;
   getSpareGroup: (name: string) => Promise<void>;
+  getSpareGroups: () => Promise<void>;
   editSpareGroup: (spareGroupEdit: newSpareGroup) => Promise<void>;
   deleteSpareGroup: (id: string) => Promise<void>;
   messageToShow: (message: Message) => void;

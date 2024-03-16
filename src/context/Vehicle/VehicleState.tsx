@@ -26,7 +26,7 @@ export const VehicleState = ({ children }: stateProps) => {
 
   const getVehicles = async () => {
     try {
-      const { data } = await api.get("/vehicle");
+      await api.get("/vehicle");
     } catch (error) {
       console.log(error);
     }
@@ -73,9 +73,9 @@ export const VehicleState = ({ children }: stateProps) => {
     }
   };
 
-  const deleteVehicle = async (licence: string) => {
+  const deleteVehicle = async (license: string) => {
     try {
-      await api.delete(`/vehicle/${licence}`);
+      await api.delete(`/vehicle/${license}`);
       dispatch({
         type: "DELETE_VEHICLE",
       });

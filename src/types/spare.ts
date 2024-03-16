@@ -22,3 +22,13 @@ export interface Spare {
 export interface SpareFiltered extends Spare{
   isDisabled:boolean
 }
+
+export interface RequestArraySpare {
+  id: number;
+  stock: number;
+  quantity: number;
+  name: string;
+  total: number;
+  code: string;
+  value: number;
+}

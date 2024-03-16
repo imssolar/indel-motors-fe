@@ -1,5 +1,5 @@
 import { orderGroupResponse } from "../../types/orderGroup";
-import { state } from "./OrderGroupState";
+import { state } from "./orderGroupState";
 
 type orderGroupActions =
   | { type: "GET_ORDERGROUPS"; payload: orderGroupResponse[] }

@@ -50,7 +50,7 @@ export const AddVehicle = () => {
     deleteVehicle,
     
   } = useContext(VehicleContext);
-  const licenceForm = watch("license_plate") ?? "";
+  const licenseForm = watch("license_plate") ?? "";
   const brandForm = watch("brand") ?? "";
   const modelForm = watch("model") ?? "";
   const rutForm = watch("rut_client") ?? "";
@@ -58,10 +58,10 @@ export const AddVehicle = () => {
   const vinNumberForm = watch("vin_number") ?? "";
 
   useEffect(() => {
-    if (licenceForm.length >= 6) {
-      getVehicle(licenceForm);
+    if (licenseForm.length >= 6) {
+      getVehicle(licenseForm);
     }
-  }, [licenceForm]);
+  }, [licenseForm]);
 
   useEffect(() => {
     setValue("brand", vehicle?.brand ?? "");
@@ -77,7 +77,7 @@ export const AddVehicle = () => {
 
   const saveVehicle = () => {
     const obj = {
-      license_plate: licenceForm,
+      license_plate: licenseForm,
       brand: brandForm,
       model: modelForm,
       year_production: yearform,
@@ -107,7 +107,7 @@ export const AddVehicle = () => {
     setValue("license_plate", "");
   };
 
-  const deleteVehicleByLicence = () => {
+  const deleteVehicleByLicense = () => {
     Swal.fire({
       title: "Eliminar Vehículo",
       text: "Confirme la eliminación del vehículo",
@@ -119,7 +119,7 @@ export const AddVehicle = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteVehicle(licenceForm);
+        deleteVehicle(licenseForm);
       }
       cleanForm();
     });
@@ -295,7 +295,7 @@ export const AddVehicle = () => {
               >
                 MODIFICAR
               </Button>
-              <Button variant="contained" onClick={deleteVehicleByLicence}>
+              <Button variant="contained" onClick={deleteVehicleByLicense}>
                 ELIMINAR
               </Button>
             </Stack>

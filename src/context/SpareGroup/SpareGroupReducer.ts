@@ -6,7 +6,8 @@ type spareGroupActions =
   | { type: "GET_SPAREGROUP"; payload: spareGroup }
   | { type: "ADD_SPAREGROUP" }
   | { type: "MESSAGE_SPAREGROUP"; payload: Message }
-  | { type: "CLEAR_SPAREGROUP" };
+  | { type: "CLEAR_SPAREGROUP" }
+  | { type: "GET_SPAREGROUPS"; payload: spareGroup[] };
 
 export const SpareGroupReducer = (
   state: ISpareGroup,
@@ -17,6 +18,12 @@ export const SpareGroupReducer = (
       return {
         ...state,
         spareGroup: action.payload,
+      };
+
+    case "GET_SPAREGROUPS":
+      return {
+        ...state,
+        spareGroups: action.payload,
       };
 
     case "ADD_SPAREGROUP":

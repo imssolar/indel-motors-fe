@@ -1,12 +1,10 @@
 import { Client } from "../../types/client";
 import { Message } from "../../types/message";
 import { orderGroupResponse } from "../../types/orderGroup";
-import { Spare, SpareFiltered } from "../../types/spare";
+import { SpareFiltered } from "../../types/spare";
 import { Vehicle } from "../../types/vehicle";
 import {
-  ResponseGetClientByPPU,
   ResponseOTByPPU,
-  ResponseWO,
   ResponseWOWithSpares,
   SparesWithoutStock,
 } from "../../types/workorder";
@@ -27,12 +25,12 @@ type WorOrderReducerTypes =
   | { type: "CLEAN_MESSAGE" }
   | { type: "SET_REQUESTSPARE" }
   | { type: "GET_WOBYID"; payload: ResponseWOWithSpares }
-  | {type:"UPDATE_WO"}
+  | { type: "UPDATE_WO" };
 
 export const WorkOrderReducer = (
   state: state,
   action: WorOrderReducerTypes
-):state =>{
+): state => {
   switch (action.type) {
     case "GET_CLIENTBYPPU":
       return {
@@ -119,11 +117,11 @@ export const WorkOrderReducer = (
       };
 
     case "UPDATE_WO":
-      return{
+      return {
         ...state,
-        message:{}
-      }
-    
+        message: {},
+      };
+
     default:
       return state;
   }

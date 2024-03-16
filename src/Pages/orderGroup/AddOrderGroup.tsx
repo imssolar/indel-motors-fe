@@ -10,7 +10,7 @@ import {
 import { Layout } from "../../components/Layout/Layout";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useContext } from "react";
-import { OrderGroupContext } from "../../context/orderGroup/OrderGroupContext";
+import { OrderGroupContext } from "../../context/orderGroup/orderGroupContext";
 
 interface IFormInput {
   name: string;

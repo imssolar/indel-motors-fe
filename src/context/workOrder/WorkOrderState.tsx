@@ -1,7 +1,7 @@
 import { useReducer } from "react";
 import api from "../../api";
 import {
-  RequestArraySpare,
+
   RequestWO,
   ResponseGetClientByPPU,
   ResponseOTByPPU,
@@ -31,7 +31,7 @@ export interface state {
   sparesFiltered: SpareFiltered[] | [];
   sparesOutStock: SparesWithoutStock[] | [];
   otByPPU: ResponseOTByPPU[] | [];
-  requestSpares: RequestArraySpare[] | [];
+
 }
 
 const INITIAL_STATE: state = {
@@ -45,17 +45,6 @@ const INITIAL_STATE: state = {
   sparesFiltered: [],
   sparesOutStock: [],
   otByPPU: [],
-  requestSpares: [
-    {
-      id: 0,
-      stock: 0,
-      quantity: 0,
-      name: "",
-      code: "",
-      total: 0,
-      value: 0,
-    },
-  ],
 };
 
 export const WorkOrderState = ({ children }: stateProps) => {
@@ -90,11 +79,7 @@ export const WorkOrderState = ({ children }: stateProps) => {
     }
   };
 
-  // const setRequestSpares = (array: RequestArraySpare[], id: number) => {
-  //   dispatch({
-  //     type: "SET_REQUESTSPARE",
-  //   });
-  // };
+
 
   const getWorkOrderType = async (): Promise<void> => {
     try {
@@ -123,7 +108,7 @@ export const WorkOrderState = ({ children }: stateProps) => {
   const generateQuotationRequest = async (newWorkOrder: RequestWO) => {
     try {
       const { data } = await api.post(`/workorder`, newWorkOrder);
-      const { message, type, sparesWithoutStock } = data;
+      const { message, type } = data;
 
       dispatch({
         type: "GENERATE_QUOTATION",
@@ -140,7 +125,7 @@ export const WorkOrderState = ({ children }: stateProps) => {
 
   const generateQuationStatus = async (workOrder: RequestWO) => {
     try {
-      const { data } = await api.put(`/workorder/${11}`, workOrder);
+      await api.put(`/workorder/${11}`, workOrder);
     } catch (error) {
       console.log(error);
     }
@@ -242,7 +227,6 @@ export const WorkOrderState = ({ children }: stateProps) => {
         messageToShow,
         cleanSearchData,
         cleanMessage,
-        // setRequestSpares,
         getWorkOrderByOTNumber,
         updateWO,
         setSparesWithoutStock

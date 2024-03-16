@@ -1,4 +1,4 @@
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Layout } from "../../components/Layout/Layout";
 import {
   Box,
@@ -8,10 +8,6 @@ import {
   Typography,
   Button,
   Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  SelectChangeEvent,
   Card,
   CardContent,
   TableContainer,
@@ -20,10 +16,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Select,
   Stack,
   Autocomplete,
-  FormGroup,
   FormControlLabel,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
@@ -32,7 +26,7 @@ import { useContext, useEffect, useState } from "react";
 import { WorkOrderContext } from "../../context/workOrder/WorkOrderContext";
 import { SpareContext } from "../../context/Spare/spareContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { OrderGroupContext } from "../../context/orderGroup/OrderGroupContext";
+import { OrderGroupContext } from "../../context/orderGroup/orderGroupContext";
 
 const headers = [
   "PPU",
@@ -45,7 +39,6 @@ const headers = [
 
 export const WO = () => {
   const {
-    handleSubmit,
     register,
     watch,
     setValue,
@@ -60,7 +53,6 @@ export const WO = () => {
     otByPPU,
     workorder,
     generateQuotationRequest,
-    generateQuationStatus,
     getClientByPPU,
     getWorkOrderByPPU,
     getWorkOrderByOTNumber,
@@ -70,7 +62,6 @@ export const WO = () => {
   const [modifyWO, setModifyWO] = useState<boolean>(false);
 
   const {
-    spare,
     allSpares,
     requestSpares,
     setRequestSpares,
@@ -83,7 +74,7 @@ export const WO = () => {
 
   const { orderGroup, getOrderGroups } = useContext(OrderGroupContext);
 
-  const licenceForm = watch("license_vehicle") ?? "";
+  const licenseForm = watch("license_vehicle") ?? "";
   const brandForm = watch("brand") ?? "";
   const modelForm = watch("model") ?? "";
   const rutForm = watch("rut") ?? "";
@@ -122,11 +113,11 @@ export const WO = () => {
   }, [workorder?.spares]);
 
   useEffect(() => {
-    if (licenceForm.length >= 6) {
-      getClientByPPU(licenceForm);
-      getWorkOrderByPPU(licenceForm);
+    if (licenseForm.length >= 6) {
+      getClientByPPU(licenseForm);
+      getWorkOrderByPPU(licenseForm);
     }
-  }, [licenceForm]);
+  }, [licenseForm]);
 
   useEffect(() => {
     setValue("brand", vehicle?.brand ?? "");
@@ -197,10 +188,10 @@ export const WO = () => {
   };
 
   const findWO = () => {
-    getClientByPPU(licenceForm);
+    getClientByPPU(licenseForm);
   };
 
-  const deleteWOByLicence = () => {};
+  const deleteWOByLicense = () => {};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -538,7 +529,7 @@ export const WO = () => {
               {/* <Button variant="contained" disabled={modifyWO} onClick={() => setModifyWO(true)}>
                 MODIFICAR
               </Button> */}
-              <Button variant="contained" onClick={deleteWOByLicence}>
+              <Button variant="contained" onClick={deleteWOByLicense}>
                 ELIMINAR
               </Button>
             </Stack>

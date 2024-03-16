@@ -1,5 +1,5 @@
 import { Client } from "./client";
-import { Vehicle } from "./vehicle";
+
 
 export interface RequestWO {
   observations: string;
@@ -19,15 +19,7 @@ interface SpareRequest {
   id: string | undefined;
   stock: number;
 }
-export interface RequestArraySpare {
-  id: number;
-  stock: number;
-  quantity: number;
-  name: string;
-  total: number;
-  code: string;
-  value: number;
-}
+
 
 export interface SparesWithoutStock {
   name: string;

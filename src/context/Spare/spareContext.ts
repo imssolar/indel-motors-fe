@@ -1,6 +1,5 @@
 import { createContext } from "react";
-import { Spare } from "../../types/spare";
-import { RequestArraySpare } from "../../types/workorder";
+import { Spare, RequestArraySpare } from "../../types/spare";
 
 interface ContextProps {
   spare: Spare | null;

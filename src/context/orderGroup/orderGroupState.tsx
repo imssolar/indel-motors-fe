@@ -3,8 +3,8 @@ import { orderGroupRequest, orderGroupResponse } from "../../types/orderGroup";
 import { Message } from "../../types/message";
 
 import api from "../../api";
-import { OrderGroupReducer } from "./OrderGroupReducer";
-import { OrderGroupContext } from "./OrderGroupContext";
+import { OrderGroupReducer } from "./orderGroupReducer";
+import { OrderGroupContext } from "./orderGroupContext";
 
 interface stateProps {
   children: React.ReactNode;

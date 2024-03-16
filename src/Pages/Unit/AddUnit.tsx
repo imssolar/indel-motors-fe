@@ -29,7 +29,7 @@ export const AddUnit = () => {
     register,
     setValue,
     watch,
-    formState: { errors },
+    formState: {  },
   } = useForm<IFormInput>({
     resolver: yupResolver(unitSchema),
   });
@@ -109,7 +109,7 @@ export const AddUnit = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteUnit(licenceForm);
+        deleteUnit(nameUnitForm);
       }
     });
     cleanForm();

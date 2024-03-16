@@ -73,6 +73,8 @@ export const Login = () => {
   useEffect(() => {
     if (token || localStorage.getItem("token")) {
       navigate("/menu");
+    } else {
+      navigate("/");
     }
   }, [token]);
 

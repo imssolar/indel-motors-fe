@@ -4,6 +4,7 @@ import { Unit, UnitToCreate } from '../../types/unit'
 
 interface ContextProps {
 	unit: Unit | null
+	units: Unit[] | []
 	message: Message
 	getUnits: () => Promise<void>
 	addUnit: (unit: UnitToCreate) => Promise<void>

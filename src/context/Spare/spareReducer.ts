@@ -1,11 +1,11 @@
-import { Spare } from "../../types/spare";
-import { RequestArraySpare } from "../../types/workorder";
+
+import { RequestArraySpare , Spare} from "../../types/spare";
 import { ISpareState } from "./spareState";
 
 type spareActionType =
   | { type: "GET_SPARE"; payload: Spare }
   | { type: "GET_ALLSPARES"; payload: Spare[] }
-  | { type: "SET_REQUESTSPARE"; payload: { id: number; spareSelected: Spare } }
+  | { type: "SET_REQUESTSPARE"; payload: { id: number; spareSelected: Spare | null} }
   | { type: "ADD_NEWSPARE"; payload: RequestArraySpare }
   | { type: "DELETE_REQUESTSPARE"; payload: number }
   | {
@@ -55,7 +55,7 @@ export const SpareReducer = (state: ISpareState, action: spareActionType) => {
       return {
         ...state,
         requestSpares: state.requestSpares.filter(
-          (item, index) => index !== action.payload
+          ( item ,index) => index !== action.payload
         ),
       };
 

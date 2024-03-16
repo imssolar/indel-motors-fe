@@ -1,9 +1,9 @@
 import { useReducer } from "react";
-import { Spare } from "../../types/spare";
+import { Spare, RequestArraySpare } from "../../types/spare";
 import { SpareReducer } from "./spareReducer";
-import { SpareContext } from "./SpareContext";
+import { SpareContext } from "./spareContext";
 import api from "../../api";
-import { RequestArraySpare } from "../../types/workorder";
+
 interface spareProps {
   children: React.ReactNode;
 }
@@ -51,12 +51,13 @@ export const SpareState = ({ children }: spareProps) => {
         payload: data,
       });
     } catch (error) {
-      console.log(error);
+
     }
   };
 
   const setRequestSpares = (code: string, id: number) => {
-    const spareSelected = state.allSpares.find((item) => item.code_id === code);
+    const spareSelected =
+      state.allSpares.find((item) => item.code_id === code) || null;
     dispatch({
       type: "SET_REQUESTSPARE",
       payload: { id, spareSelected },
@@ -64,7 +65,7 @@ export const SpareState = ({ children }: spareProps) => {
   };
 
   const AddnewArrayOfSpare = (spareToAdd: RequestArraySpare) => {
-    console.log(spareToAdd);
+
     dispatch({
       type: "ADD_NEWSPARE",
       payload: spareToAdd,
@@ -85,16 +86,19 @@ export const SpareState = ({ children }: spareProps) => {
     });
   };
 
-  const setRequestSpareEdit = (requestSparesEdit: any, spares_stock: any) => {
+  const setRequestSpareEdit = (
+    requestSparesEdit: Spare[],
+    spares_stock: { id: string; stock: number }[]
+  ) => {
     const requestWithStock = requestSparesEdit.map((res) => {
       const findId = spares_stock.find((item) => item.id === res.code_id);
-      console.log(findId);
+
       return {
         ...res,
-        quantity: findId.stock,
-        value:res.cost,
-        total:findId.stock * res.cost,
-        code:res.code_id
+        quantity: findId?.stock,
+        value: res.cost,
+        total: (findId?.stock || 0)  * res.cost,
+        code: res.code_id,
       };
     });
     dispatch({

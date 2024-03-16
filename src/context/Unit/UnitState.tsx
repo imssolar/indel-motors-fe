@@ -11,11 +11,13 @@ interface stateProps {
 
 export interface state {
   unit: Unit | null;
+  units: Unit[] | [];
   message: Message;
 }
 
 const INITITAL_STATE: state = {
   unit: null,
+  units: [],
   message: {},
 };
 
@@ -25,7 +27,11 @@ export const UnitState = ({ children }: stateProps) => {
   const getUnits = async (): Promise<void> => {
     try {
       const { data } = await api.get("/unit");
-      console.log(data);
+
+      dispatch({
+        type: "GET_UNITS",
+        payload: data.units,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -51,12 +57,12 @@ export const UnitState = ({ children }: stateProps) => {
   const editUnit = async (unit: UnitToCreate): Promise<void> => {
     try {
       const { data } = await api.put(`/unit/${unit.name_unit}`, unit);
-      const { message, type } = data;
+      const { text, type } = data;
 
-      messageToShow({ text: message, type });
+      messageToShow({ text, type });
       dispatch({
         type: "EDIT_UNIT",
-        payload: { message, type },
+        payload: { text, type },
       });
     } catch (error) {
       console.log(error);

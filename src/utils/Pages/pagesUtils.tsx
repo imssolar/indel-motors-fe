@@ -1,6 +1,5 @@
 import React from "react";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import SearchIcon from "@mui/icons-material/Search";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import BuildIcon from "@mui/icons-material/Build";
 import CarRepairIcon from "@mui/icons-material/CarRepair";
